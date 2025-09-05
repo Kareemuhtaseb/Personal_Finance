@@ -38,27 +38,21 @@ Thumbs.db
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Desktop.ini
 
 # Build outputs
 build/
 dist/
-out/
 
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-
-# Testing
+# Coverage directory used by tools like istanbul
 coverage/
+*.lcov
+
+# nyc test coverage
 .nyc_output
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Dependency directories
+node_modules/
+jspm_packages/
 
 # Optional npm cache directory
 .npm
@@ -90,6 +84,10 @@ pids
 
 # Nuxt.js build / generate output
 .nuxt
+
+# Gatsby files
+.cache/
+public
 
 # Storybook build outputs
 .out
