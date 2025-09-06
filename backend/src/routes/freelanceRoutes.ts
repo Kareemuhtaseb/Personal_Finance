@@ -13,7 +13,14 @@ import {
   deleteWorkSession,
   markPaymentReceived,
   bulkMarkSessionsPaid,
-  getFreelanceSummary
+  getFreelanceSummary,
+  createInvoice,
+  getInvoices,
+  updateInvoice,
+  deleteInvoice,
+  createPartialPayment,
+  getPartialPayments,
+  exportInvoicePDF
 } from '../controllers/freelanceController';
 
 const router = Router();
@@ -38,6 +45,17 @@ router.delete('/work-sessions/:sessionId', deleteWorkSession);
 // Payment routes
 router.post('/projects/:projectId/payment', markPaymentReceived);
 router.post('/work-sessions/bulk-payment', bulkMarkSessionsPaid);
+
+// Invoice routes
+router.post('/invoices', createInvoice);
+router.get('/invoices', getInvoices);
+router.put('/invoices/:id', updateInvoice);
+router.delete('/invoices/:id', deleteInvoice);
+router.get('/invoices/:id/pdf', exportInvoicePDF);
+
+// Partial payment routes
+router.post('/partial-payments', createPartialPayment);
+router.get('/partial-payments', getPartialPayments);
 
 // Summary routes
 router.get('/summary', getFreelanceSummary);

@@ -176,6 +176,10 @@ export interface UpdateWorkSessionRequest {
   isPaid?: boolean
   description?: string
   customAmount?: number
+  projectId?: string
+  workHours?: number
+  date?: string
+  // Updated to support editing work sessions
 }
 
 export interface PaymentRequest {
@@ -189,6 +193,94 @@ export interface BulkPaymentRequest {
   sessionIds: string[]
   amount: number
   date: string
+  accountId?: string
+  categoryId?: string
+}
+
+// Invoice interfaces
+export interface Invoice {
+  id: string
+  invoiceNumber: string
+  amount: number
+  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE'
+  dueDate: string
+  paidDate?: string
+  description?: string
+  project: {
+    id: string
+    name: string
+    client: string
+  }
+  invoiceWorkSessions: Array<{
+    workSession: {
+      id: string
+      startTime: string
+      endTime?: string
+      description?: string
+      workHours: string
+    }
+  }>
+  partialPayments: Array<{
+    id: string
+    amount: number
+    paymentDate: string
+    description?: string
+  }>
+  totalPaid: number
+  remainingAmount: number
+  isFullyPaid: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateInvoiceRequest {
+  projectId: string
+  workSessionIds: string[]
+  amount: number
+  dueDate?: string
+  description?: string
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE'
+}
+
+export interface UpdateInvoiceRequest {
+  amount?: number
+  dueDate?: string
+  description?: string
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE'
+}
+
+// Partial Payment interfaces
+export interface PartialPayment {
+  id: string
+  invoiceId?: string
+  workSessionId?: string
+  amount: number
+  paymentDate: string
+  description?: string
+  transactionId?: string
+  invoice?: {
+    id: string
+    invoiceNumber: string
+    project: {
+      name: string
+    }
+  }
+  workSession?: {
+    id: string
+    project: {
+      name: string
+    }
+  }
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreatePartialPaymentRequest {
+  invoiceId?: string
+  workSessionId?: string
+  amount: number
+  paymentDate?: string
+  description?: string
   accountId?: string
   categoryId?: string
 }
@@ -550,6 +642,66 @@ class ApiService {
 
   async getFreelanceSummary(): Promise<{ data: ApiResponse<FreelanceSummary> }> {
     return this.makeRequest<FreelanceSummary>('/freelance/summary')
+  }
+
+  // Invoice methods
+  async createInvoice(invoiceData: CreateInvoiceRequest): Promise<{ data: ApiResponse<Invoice> }> {
+    return this.makeRequest<Invoice>('/freelance/invoices', {
+      method: 'POST',
+      body: JSON.stringify(invoiceData)
+    })
+  }
+
+  async getInvoices(projectId?: string, status?: string): Promise<{ data: ApiResponse<Invoice[]> }> {
+    const params = new URLSearchParams()
+    if (projectId) params.append('projectId', projectId)
+    if (status) params.append('status', status)
+    const query = params.toString() ? `?${params.toString()}` : ''
+    return this.makeRequest<Invoice[]>(`/freelance/invoices${query}`)
+  }
+
+  async updateInvoice(invoiceId: string, invoiceData: UpdateInvoiceRequest): Promise<{ data: ApiResponse<Invoice> }> {
+    return this.makeRequest<Invoice>(`/freelance/invoices/${invoiceId}`, {
+      method: 'PUT',
+      body: JSON.stringify(invoiceData)
+    })
+  }
+
+  async deleteInvoice(invoiceId: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/freelance/invoices/${invoiceId}`, {
+      method: 'DELETE'
+    })
+  }
+
+  async exportInvoicePDF(invoiceId: string): Promise<Blob> {
+    const token = localStorage.getItem('accessToken')
+    const response = await fetch(`${this.baseURL}/freelance/invoices/${invoiceId}/pdf`, {
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` })
+      }
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to export invoice PDF')
+    }
+    
+    return response.blob()
+  }
+
+  // Partial Payment methods
+  async createPartialPayment(paymentData: CreatePartialPaymentRequest): Promise<{ data: ApiResponse<PartialPayment> }> {
+    return this.makeRequest<PartialPayment>('/freelance/partial-payments', {
+      method: 'POST',
+      body: JSON.stringify(paymentData)
+    })
+  }
+
+  async getPartialPayments(invoiceId?: string, workSessionId?: string): Promise<{ data: ApiResponse<PartialPayment[]> }> {
+    const params = new URLSearchParams()
+    if (invoiceId) params.append('invoiceId', invoiceId)
+    if (workSessionId) params.append('workSessionId', workSessionId)
+    const query = params.toString() ? `?${params.toString()}` : ''
+    return this.makeRequest<PartialPayment[]>(`/freelance/partial-payments${query}`)
   }
 
   // Utility methods
