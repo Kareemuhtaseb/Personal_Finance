@@ -35,12 +35,6 @@ const router = createRouter({
       meta: { title: 'Income', requiresAuth: true }
     },
     {
-      path: '/savings',
-      name: 'savings',
-      component: () => import('../views/Savings.vue'),
-      meta: { title: 'Savings', requiresAuth: true }
-    },
-    {
       path: '/freelance',
       name: 'freelance',
       component: () => import('../views/Freelance.vue'),

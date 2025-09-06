@@ -344,8 +344,9 @@ const deleteAccount = async (account: any) => {
               </label>
               <select
                 v-model="formData.timezone"
-                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
+                class="select-premium"
               >
+                <option value="" disabled>Select Timezone</option>
                 <option value="UTC-8">UTC-8 (PST)</option>
                 <option value="UTC-7">UTC-7 (MST)</option>
                 <option value="UTC-6">UTC-6 (CST)</option>
@@ -361,8 +362,9 @@ const deleteAccount = async (account: any) => {
               </label>
               <select
                 v-model="formData.currency"
-                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
+                class="select-premium"
               >
+                <option value="" disabled>Select Currency</option>
                 <option 
                   v-for="currency in availableCurrencies" 
                   :key="currency.code" 

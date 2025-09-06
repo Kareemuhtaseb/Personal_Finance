@@ -7,7 +7,6 @@ const router = useRouter()
 const actions = [
   { name: 'Add Expense', icon: PlusIcon, color: 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700', href: '/expenses' },
   { name: 'Income Sources', icon: BanknotesIcon, color: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700', href: '/income' },
-  { name: 'Savings Goals', icon: CreditCardIcon, color: 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700', href: '/savings' },
   { name: 'View Reports', icon: DocumentTextIcon, color: 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700', href: '/reports' }
 ]
 

@@ -875,6 +875,7 @@ onMounted(() => {
               v-model="newProject.paymentType"
               class="select-premium"
             >
+              <option value="" disabled>Select Payment Type</option>
               <option value="HOURLY_RATE">Hourly Rate Payment</option>
               <option value="REFERENCE_ONLY">Reference Only (Custom Amounts)</option>
             </select>
@@ -913,7 +914,7 @@ onMounted(() => {
             <label class="block text-white/70 text-sm mb-2">Project</label>
             <select 
               v-model="selectedProject"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-500"
+              class="select-premium"
             >
               <option :value="null" disabled>Select a project</option>
               <option v-for="project in projects" :key="project.id" :value="project">
@@ -946,9 +947,9 @@ onMounted(() => {
             <label class="block text-white/70 text-sm mb-2">Account</label>
             <select 
               v-model="paymentData.accountId"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-500"
+              class="select-premium"
             >
-              <option value="">Select an account</option>
+              <option value="" disabled>Select an account</option>
               <option v-for="account in accounts" :key="account.id" :value="account.id">
                 {{ account.name }}
               </option>
@@ -1018,9 +1019,9 @@ onMounted(() => {
             <label class="block text-white/70 text-sm mb-2">Project</label>
             <select 
               v-model="manualWorkData.projectId"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-500"
+              class="select-premium"
             >
-              <option value="">Select a project</option>
+              <option value="" disabled>Select a project</option>
               <option v-for="project in activeProjects" :key="project.id" :value="project.id">
                 {{ project.name }} - {{ project.client }}
               </option>
@@ -1116,9 +1117,9 @@ onMounted(() => {
             <label class="block text-white/70 text-sm mb-2">Account</label>
             <select 
               v-model="paymentDialogData.accountId"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-500"
+              class="select-premium"
             >
-              <option value="">Select an account</option>
+              <option value="" disabled>Select an account</option>
               <option v-for="account in accounts" :key="account.id" :value="account.id">
                 {{ account.name }}
               </option>
@@ -1177,9 +1178,9 @@ onMounted(() => {
             <label class="block text-white/70 text-sm mb-2">Account</label>
             <select 
               v-model="bulkPaymentData.accountId"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-500"
+              class="select-premium"
             >
-              <option value="">Select an account</option>
+              <option value="" disabled>Select an account</option>
               <option v-for="account in accounts" :key="account.id" :value="account.id">
                 {{ account.name }}
               </option>

@@ -4,7 +4,6 @@ import apiService, {
   type DashboardOverview, 
   type KPIData, 
   type Transaction, 
-  type SavingsGoal, 
   type FreelanceSummary,
   type RecurringTransaction 
 } from '../services/api'
@@ -14,7 +13,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const overview = ref<DashboardOverview | null>(null)
   const kpis = ref<KPIData[]>([])
   const recentTransactions = ref<Transaction[]>([])
-  const savingsGoals = ref<SavingsGoal[]>([])
   const freelanceSummary = ref<FreelanceSummary | null>(null)
   const upcomingRecurring = ref<RecurringTransaction[]>([])
   const categoryBreakdown = ref<any[]>([])
@@ -30,7 +28,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const monthlyExpenses = computed(() => overview.value?.monthlyExpenses || 0)
   const netSavings = computed(() => overview.value?.netSavings || 0)
   const freelanceIncome = computed(() => overview.value?.freelanceIncome || 0)
-  const savingsProgress = computed(() => overview.value?.savingsProgress || 0)
 
   // Actions
   const setError = (errorMessage: string | null) => {
@@ -104,26 +101,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     }
   }
 
-  // Fetch savings goals
-  const fetchSavingsGoals = async () => {
-    try {
-      setError(null)
-
-      const response = await apiService.getSavingsGoals()
-      
-      if (response.data.success) {
-        savingsGoals.value = response.data.data!
-        return { success: true, data: response.data.data }
-      } else {
-        setError(response.data.message)
-        return { success: false, error: response.data.message }
-      }
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to fetch savings goals'
-      setError(errorMessage)
-      return { success: false, error: errorMessage }
-    }
-  }
 
   // Fetch freelance summary
   const fetchFreelanceSummary = async () => {
@@ -180,20 +157,18 @@ export const useDashboardStore = defineStore('dashboard', () => {
         overviewResult,
         kpisResult,
         transactionsResult,
-        savingsResult,
         freelanceResult,
         recurringResult
       ] = await Promise.allSettled([
         fetchOverview(),
         fetchKPIs(),
         fetchRecentTransactions(),
-        fetchSavingsGoals(),
         fetchFreelanceSummary(),
         fetchUpcomingRecurring()
       ])
 
       // Check for any failures
-      const results = [overviewResult, kpisResult, transactionsResult, savingsResult, freelanceResult, recurringResult]
+      const results = [overviewResult, kpisResult, transactionsResult, freelanceResult, recurringResult]
       const failures = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.success))
       
       if (failures.length > 0) {
@@ -227,7 +202,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     overview.value = null
     kpis.value = []
     recentTransactions.value = []
-    savingsGoals.value = []
     freelanceSummary.value = null
     upcomingRecurring.value = []
     categoryBreakdown.value = []
@@ -241,7 +215,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     overview,
     kpis,
     recentTransactions,
-    savingsGoals,
     freelanceSummary,
     upcomingRecurring,
     categoryBreakdown,
@@ -256,7 +229,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     monthlyExpenses,
     netSavings,
     freelanceIncome,
-    savingsProgress,
     
     // Actions
     setError,
@@ -264,7 +236,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     fetchOverview,
     fetchKPIs,
     fetchRecentTransactions,
-    fetchSavingsGoals,
     fetchFreelanceSummary,
     fetchUpcomingRecurring,
     fetchAllDashboardData,

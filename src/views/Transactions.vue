@@ -232,7 +232,7 @@ const deleteTransaction = async () => {
             </label>
             <select
               v-model="selectedCategory"
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300"
+              class="select-premium-enhanced"
             >
               <option value="all">All Categories</option>
               <option value="Food">🍽️ Food</option>

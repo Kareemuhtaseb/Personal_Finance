@@ -32,7 +32,6 @@ const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
   { name: 'Expenses', href: '/expenses', icon: CreditCardIcon },
   { name: 'Income', href: '/income', icon: BanknotesIcon },
-  { name: 'Savings', href: '/savings', icon: BanknotesIcon },
   { name: 'Freelance', href: '/freelance', icon: BriefcaseIcon },
   { name: 'Reports', href: '/reports', icon: ChartBarIcon },
   { name: 'Settings', href: '/settings', icon: Cog6ToothIcon }

@@ -552,12 +552,12 @@ const hasActiveFilters = computed(() => {
           
           <div>
             <label class="block text-white/90 mb-2">Category</label>
-            <select 
+            <select
               v-model="newIncome.categoryId"
               required
-              class="input-premium"
+              class="select-premium"
             >
-              <option value="">Select Category</option>
+              <option value="" disabled>Select Category</option>
               <option 
                 v-for="category in categoriesStore.getIncomeCategories()" 
                 :key="category.id" 
@@ -573,9 +573,9 @@ const hasActiveFilters = computed(() => {
             <select 
               v-model="newIncome.accountId"
               required
-              class="input-premium"
+              class="select-premium"
             >
-              <option value="">Select Account</option>
+              <option value="" disabled>Select Account</option>
               <option 
                 v-for="account in accountsStore.activeAccounts" 
                 :key="account.id" 

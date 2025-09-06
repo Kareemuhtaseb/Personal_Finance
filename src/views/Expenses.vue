@@ -560,7 +560,7 @@ const hasActiveFilters = computed(() => {
               required
               class="select-premium"
             >
-              <option value="">Select Category</option>
+              <option value="" disabled>Select Category</option>
               <option 
                 v-for="category in categoriesStore.getExpenseCategories()" 
                 :key="category.id" 
@@ -578,7 +578,7 @@ const hasActiveFilters = computed(() => {
               required
               class="select-premium"
             >
-              <option value="">Select Account</option>
+              <option value="" disabled>Select Account</option>
               <option 
                 v-for="account in accountsStore.activeAccounts" 
                 :key="account.id" 

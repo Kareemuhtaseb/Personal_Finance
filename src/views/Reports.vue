@@ -75,8 +75,9 @@ const currentChartComponent = computed(() => {
       <div class="mt-4 sm:mt-0 space-x-3">
         <select
           v-model="selectedPeriod"
-          class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
+          class="select-premium"
         >
+          <option value="" disabled>Select Period</option>
           <option value="week">This Week</option>
           <option value="month">This Month</option>
           <option value="quarter">This Quarter</option>
@@ -104,7 +105,7 @@ const currentChartComponent = computed(() => {
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
           <button
-            v-for="report in ['cashflow', 'income-expenses', 'categories', 'savings', 'freelance', 'budgets']"
+            v-for="report in ['cashflow', 'income-expenses', 'categories', 'freelance', 'budgets']"
             :key="report"
             @click="selectedReport = report"
             :class="[

@@ -13,7 +13,6 @@ import KPIWidget from '../components/dashboard/KPIWidget.vue'
 import ChartCard from '../components/dashboard/ChartCard.vue'
 import QuickActions from '../components/dashboard/QuickActions.vue'
 import RecentTransactions from '../components/dashboard/RecentTransactions.vue'
-import SavingsGoals from '../components/dashboard/SavingsGoals.vue'
 import FreelanceKPIs from '../components/dashboard/FreelanceKPIs.vue'
 import CashflowChart from '../components/dashboard/CashflowChart.vue'
 import CategoryChart from '../components/dashboard/CategoryChart.vue'
@@ -37,7 +36,6 @@ const monthlyData = computed(() => ({
 
 const kpis = computed(() => dashboardStore.kpis)
 const recentTransactions = computed(() => dashboardStore.recentTransactions)
-const savingsGoals = computed(() => dashboardStore.savingsGoals)
 const freelanceData = computed(() => dashboardStore.freelanceSummary)
 
 // Category breakdown data for charts - will be populated from real data
@@ -263,10 +261,9 @@ watch(() => route.path, async (newPath, oldPath) => {
         </div>
       </div>
       
-      <!-- Quick Actions & Savings Goals -->
+      <!-- Quick Actions -->
       <div class="space-y-6 animate-slide-in-up" style="animation-delay: 0.8s;">
         <QuickActions />
-        <SavingsGoals :goals="savingsGoals" />
       </div>
     </div>
 

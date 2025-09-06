@@ -13,7 +13,6 @@ const navigation = [
   { name: 'Expenses', href: '/expenses', icon: CreditCardIcon },
   { name: 'Income', href: '/income', icon: BanknotesIcon },
   { name: 'Categories', href: '/categories', icon: TagIcon },
-  { name: 'Savings', href: '/savings', icon: BanknotesIcon },
   { name: 'Freelance', href: '/freelance', icon: BriefcaseIcon }
 ]
 </script>

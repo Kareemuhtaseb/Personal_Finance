@@ -79,15 +79,6 @@ export interface Transaction {
   }
 }
 
-export interface SavingsGoal {
-  id: string
-  name: string
-  target: number
-  current: number
-  description?: string
-  createdAt: string
-  updatedAt: string
-}
 
 export interface FreelanceSummary {
   activeProjects: number
@@ -402,9 +393,6 @@ class ApiService {
     return this.makeRequest<Transaction[]>(`/dashboard/recent-transactions?limit=${limit}`)
   }
 
-  async getSavingsGoals(): Promise<{ data: ApiResponse<SavingsGoal[]> }> {
-    return this.makeRequest<SavingsGoal[]>('/dashboard/savings-goals')
-  }
 
   async getUpcomingRecurring(): Promise<{ data: ApiResponse<RecurringTransaction[]> }> {
     return this.makeRequest<RecurringTransaction[]>('/dashboard/upcoming-recurring')
