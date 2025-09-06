@@ -5,7 +5,7 @@ import { apiService } from '@/services/api'
 import { useCategoriesStore } from '@/stores/categories'
 import { useAccountsStore } from '@/stores/accounts'
 
-const incomeEntries = ref([])
+const transactions = ref([])
 const loading = ref(true)
 
 // Use stores
@@ -14,7 +14,7 @@ const accountsStore = useAccountsStore()
 
 const showAddModal = ref(false)
 const showDeleteModal = ref(false)
-const incomeToDelete = ref(null)
+const transactionToDelete = ref(null)
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 const selectedAccount = ref('all')
@@ -38,30 +38,30 @@ const newIncome = ref({
   date: new Date().toISOString().split('T')[0]
 })
 
-// Computed property for filtered income entries
-const filteredIncomeEntries = computed(() => {
-  let filtered = incomeEntries.value
-  console.log('Original income entries:', incomeEntries.value.length)
+// Computed property for filtered transactions
+const filteredTransactions = computed(() => {
+  let filtered = transactions.value
+  console.log('Original transactions:', transactions.value.length)
   console.log('Filter values:', { searchQuery: searchQuery.value, selectedCategory: selectedCategory.value, selectedAccount: selectedAccount.value })
 
   // Filter by search query
   if (searchQuery.value) {
-    filtered = filtered.filter(entry =>
-      entry.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      entry.category.toLowerCase().includes(searchQuery.value.toLowerCase())
+    filtered = filtered.filter(transaction =>
+      transaction.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      transaction.category.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
     console.log('After search filter:', filtered.length)
   }
 
   // Filter by category
   if (selectedCategory.value !== 'all') {
-    filtered = filtered.filter(entry => entry.category === selectedCategory.value)
+    filtered = filtered.filter(transaction => transaction.category === selectedCategory.value)
     console.log('After category filter:', filtered.length)
   }
 
   // Filter by account
   if (selectedAccount.value !== 'all') {
-    filtered = filtered.filter(entry => entry.account === selectedAccount.value)
+    filtered = filtered.filter(transaction => transaction.account === selectedAccount.value)
     console.log('After account filter:', filtered.length)
   }
 
@@ -69,38 +69,31 @@ const filteredIncomeEntries = computed(() => {
   return filtered
 })
 
-// Load income entries from API
-const loadIncomeEntries = async () => {
+// Load transactions from API
+const loadTransactions = async () => {
   try {
     loading.value = true
     const response = await apiService.getRecentTransactions(100) // Get more transactions
     
-    console.log('Raw API response:', response.data)
-    
     if (response.data.success) {
-      console.log('All transactions:', response.data.data)
-      
       // Filter only income transactions and transform API data to match our frontend format
-      const incomeTransactions = response.data.data.filter((transaction: any) => transaction.type === 'INCOME')
-      console.log('Income transactions found:', incomeTransactions)
-      
-      incomeEntries.value = incomeTransactions.map((transaction: any) => ({
-        id: transaction.id,
-        date: transaction.date.split('T')[0],
-        description: transaction.description,
-        amount: transaction.amount, // Income is already positive
-        category: transaction.category?.name || 'Unknown',
-        account: transaction.account?.name || 'Unknown'
-      }))
-      
-      console.log('Processed income entries:', incomeEntries.value)
+      transactions.value = response.data.data
+        .filter((transaction: any) => transaction.type === 'INCOME')
+        .map((transaction: any) => ({
+          id: transaction.id,
+          date: transaction.date.split('T')[0],
+          description: transaction.description,
+          amount: Math.abs(transaction.amount), // Income should be positive
+          category: transaction.category?.name || 'Unknown',
+          account: transaction.account?.name || 'Unknown'
+        }))
     } else {
-      console.error('Failed to load income entries:', response.data.message)
-      incomeEntries.value = []
+      console.error('Failed to load transactions:', response.data.message)
+      transactions.value = []
     }
   } catch (error) {
-    console.error('Error loading income entries:', error)
-    incomeEntries.value = []
+    console.error('Error loading transactions:', error)
+    transactions.value = []
   } finally {
     loading.value = false
   }
@@ -109,7 +102,7 @@ const loadIncomeEntries = async () => {
 // Load data when component mounts
 onMounted(async () => {
   await Promise.all([
-    loadIncomeEntries(),
+    loadTransactions(),
     categoriesStore.fetchCategories(),
     accountsStore.fetchAccounts()
   ])
@@ -148,8 +141,8 @@ const addIncome = async () => {
     const response = await apiService.createTransaction(incomeData)
     
     if (response.data.success) {
-      // Reload income entries from API to get the latest data
-      await loadIncomeEntries()
+      // Reload transactions from API to get the latest data
+      await loadTransactions()
       
       // Reset form
       newIncome.value = {
@@ -173,28 +166,28 @@ const addIncome = async () => {
 }
 
 // Delete income entry functions
-const confirmDelete = (incomeEntry) => {
-  incomeToDelete.value = incomeEntry
+const confirmDelete = (transaction: any) => {
+  transactionToDelete.value = transaction
   showDeleteModal.value = true
 }
 
 const cancelDelete = () => {
-  incomeToDelete.value = null
+  transactionToDelete.value = null
   showDeleteModal.value = false
 }
 
 const deleteIncome = async () => {
-  if (!incomeToDelete.value) return
+  if (!transactionToDelete.value) return
 
   try {
-    const response = await apiService.deleteTransaction(incomeToDelete.value.id)
+    const response = await apiService.deleteTransaction(transactionToDelete.value.id)
     
     if (response.data.success) {
-      // Reload income entries from API to get the latest data
-      await loadIncomeEntries()
+      // Reload transactions from API to get the latest data
+      await loadTransactions()
       
       showDeleteModal.value = false
-      incomeToDelete.value = null
+      transactionToDelete.value = null
       
       alert('Income entry deleted successfully!')
     } else {
@@ -211,12 +204,6 @@ const addCategory = async () => {
   if (!newCategory.value.name.trim()) return
   
   try {
-    console.log('Creating category with data:', {
-      name: newCategory.value.name.trim(),
-      color: newCategory.value.color,
-      type: newCategory.value.type
-    })
-    
     const result = await categoriesStore.createCategory({
       name: newCategory.value.name.trim(),
       color: newCategory.value.color,
@@ -234,7 +221,6 @@ const addCategory = async () => {
       showAddCategoryModal.value = false
       alert('Income category created successfully!')
     } else {
-      console.error('Category creation failed:', result.error)
       alert('Failed to create category: ' + result.error)
     }
   } catch (error) {
@@ -349,7 +335,7 @@ const hasActiveFilters = computed(() => {
       <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
       
       <!-- Animated border gradient -->
-      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 opacity-50"></div>
       <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
       
       <div class="relative z-10">
@@ -380,7 +366,7 @@ const hasActiveFilters = computed(() => {
                 :key="category.id" 
                 :value="category.name"
               >
-                {{ category.icon }} {{ category.name }}
+                {{ category.name }}
               </option>
             </select>
           </div>
@@ -408,7 +394,7 @@ const hasActiveFilters = computed(() => {
             <button 
               type="button"
               @click="clearFilters"
-              class="w-full px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              class="btn-premium w-full inline-flex items-center justify-center"
             >
               <FunnelIcon class="h-5 w-5 mr-2" />
               Clear Filters
@@ -419,7 +405,7 @@ const hasActiveFilters = computed(() => {
     </div>
 
 
-    <!-- Income entries list with glassmorphism -->
+    <!-- Income list with glassmorphism -->
     <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 relative overflow-hidden">
       <!-- Enhanced background effects -->
       <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
@@ -431,7 +417,7 @@ const hasActiveFilters = computed(() => {
       
       <div class="relative z-10">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-2xl font-bold text-white tracking-wide group-hover:text-green-200 transition-colors duration-300">Recent Income</h3>
+          <h3 class="text-premium-medium group-hover:text-green-200 transition-colors duration-300">Recent Income</h3>
           <div v-if="hasActiveFilters" class="flex items-center space-x-2">
             <span class="text-sm text-white/60">Filters active</span>
             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -444,15 +430,15 @@ const hasActiveFilters = computed(() => {
         </div>
         
         <!-- Empty State -->
-        <div v-else-if="filteredIncomeEntries.length === 0" class="flex items-center justify-center py-12">
+        <div v-else-if="filteredTransactions.length === 0" class="flex items-center justify-center py-12">
           <div class="text-center">
             <div class="text-white/60 text-lg mb-2">
-              {{ incomeEntries.length === 0 ? 'No income entries found' : 'No income entries match your filters' }}
+              {{ transactions.length === 0 ? 'No income entries found' : 'No income entries match your filters' }}
             </div>
             <div class="text-white/40 text-sm">
-              {{ incomeEntries.length === 0 ? 'Add your first income entry to get started!' : 'Try adjusting your search or filter criteria' }}
+              {{ transactions.length === 0 ? 'Add your first income entry to get started!' : 'Try adjusting your search or filter criteria' }}
             </div>
-            <div v-if="incomeEntries.length > 0" class="mt-4">
+            <div v-if="transactions.length > 0" class="mt-4">
               <button 
                 @click="clearFilters"
                 class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
@@ -463,46 +449,47 @@ const hasActiveFilters = computed(() => {
           </div>
         </div>
         
-        <!-- Income Entries List -->
+        <!-- Income List -->
         <div v-else class="space-y-4">
           <div
-            v-for="entry in filteredIncomeEntries"
-            :key="entry.id"
+            v-for="(transaction, index) in filteredTransactions"
+            :key="transaction.id"
             class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group animate-fade-in-scale cursor-pointer flex items-center justify-between"
+            :style="{ animationDelay: `${index * 0.1}s` }"
           >
-            <!-- Entry card background effects -->
+            <!-- Transaction card background effects -->
             <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
             
             <!-- Hover shimmer effect -->
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="relative z-10 flex items-center space-x-4">
               <div class="p-3 bg-white/10 rounded-xl border border-white/20">
                 <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                  <span class="text-white text-sm font-bold">{{ entry.category.charAt(0) }}</span>
+                  <span class="text-white text-sm font-bold">{{ transaction.category.charAt(0) }}</span>
                 </div>
               </div>
               
               <div>
-                <p class="text-lg font-semibold text-white group-hover/item:text-green-200 transition-colors duration-300">{{ entry.description }}</p>
+                <p class="text-lg font-semibold text-white group-hover/item:text-green-200 transition-colors duration-300">{{ transaction.description }}</p>
                 <div class="flex items-center space-x-4 text-sm text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
-                  <span>{{ entry.date }}</span>
-                  <span>{{ entry.category }}</span>
-                  <span>{{ entry.account }}</span>
+                  <span>{{ transaction.date }}</span>
+                  <span>{{ transaction.category }}</span>
+                  <span>{{ transaction.account }}</span>
                 </div>
               </div>
             </div>
             
-            <div class="flex items-center space-x-4">
+            <div class="relative z-10 flex items-center space-x-4">
               <div class="text-right">
-                <p :class="['text-2xl font-bold', getAmountColor(entry.amount)]">
-                  {{ formatAmount(entry.amount) }}
+                <p :class="['text-2xl font-bold', getAmountColor(transaction.amount)]">
+                  {{ formatAmount(transaction.amount) }}
                 </p>
               </div>
               
               <button
-                @click="confirmDelete(entry)"
+                @click="confirmDelete(transaction)"
                 class="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300 opacity-0 group-hover/item:opacity-100"
                 title="Delete income entry"
               >
@@ -576,7 +563,7 @@ const hasActiveFilters = computed(() => {
                 :key="category.id" 
                 :value="category.id"
               >
-                {{ category.icon }} {{ category.name }}
+                {{ category.name }}
               </option>
             </select>
           </div>
@@ -636,13 +623,13 @@ const hasActiveFilters = computed(() => {
             Are you sure you want to delete this income entry?
           </div>
           
-          <div v-if="incomeToDelete" class="bg-white/5 rounded-lg p-4 border border-white/10">
-            <div class="text-white font-semibold">{{ incomeToDelete.description }}</div>
+          <div v-if="transactionToDelete" class="bg-white/5 rounded-lg p-4 border border-white/10">
+            <div class="text-white font-semibold">{{ transactionToDelete.description }}</div>
             <div class="text-white/60 text-sm">
-              {{ incomeToDelete.date }} • {{ incomeToDelete.category }} • {{ incomeToDelete.account }}
+              {{ transactionToDelete.date }} • {{ transactionToDelete.category }} • {{ transactionToDelete.account }}
             </div>
-            <div :class="['text-lg font-bold mt-2', getAmountColor(incomeToDelete.amount)]">
-              {{ formatAmount(incomeToDelete.amount) }}
+            <div :class="['text-lg font-bold mt-2', getAmountColor(transactionToDelete.amount)]">
+              {{ formatAmount(transactionToDelete.amount) }}
             </div>
           </div>
           

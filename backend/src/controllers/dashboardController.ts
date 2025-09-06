@@ -228,10 +228,16 @@ export const getRecentTransactions = asyncHandler(async (req: AuthenticatedReque
     take: limit
   });
 
+  // Convert amounts back to dollars
+  const formattedTransactions = transactions.map(transaction => ({
+    ...transaction,
+    amount: transaction.amount / 100,
+  }));
+
   const response: ApiResponse = {
     success: true,
     message: 'Recent transactions retrieved successfully',
-    data: transactions
+    data: formattedTransactions
   };
 
   res.json(response);

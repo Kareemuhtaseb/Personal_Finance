@@ -368,7 +368,7 @@ const hasActiveFilters = computed(() => {
                 :key="category.id" 
                 :value="category.name"
               >
-                {{ category.icon }} {{ category.name }}
+                {{ category.name }}
               </option>
             </select>
           </div>
@@ -566,7 +566,7 @@ const hasActiveFilters = computed(() => {
                 :key="category.id" 
                 :value="category.id"
               >
-                {{ category.icon }} {{ category.name }}
+                {{ category.name }}
               </option>
             </select>
           </div>
