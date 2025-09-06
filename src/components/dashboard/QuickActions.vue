@@ -1,36 +1,45 @@
 <script setup lang="ts">
 import { PlusIcon, DocumentTextIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/vue/24/outline'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const actions = [
-  { name: 'Add Transaction', icon: PlusIcon, color: 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700', href: '/transactions/new' },
-  { name: 'Create Invoice', icon: DocumentTextIcon, color: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700', href: '/freelance/invoices/new' },
-  { name: 'Log Time', icon: CreditCardIcon, color: 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700', href: '/freelance/time/new' },
-  { name: 'Add Goal', icon: BanknotesIcon, color: 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700', href: '/savings/goals/new' }
+  { name: 'Add Expense', icon: PlusIcon, color: 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700', href: '/expenses' },
+  { name: 'Income Sources', icon: BanknotesIcon, color: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700', href: '/income' },
+  { name: 'Savings Goals', icon: CreditCardIcon, color: 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700', href: '/savings' },
+  { name: 'View Reports', icon: DocumentTextIcon, color: 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700', href: '/reports' }
 ]
+
+const handleNavigation = (href: string) => {
+  console.log('Button clicked! Navigating to:', href)
+  alert(`Button clicked! Would navigate to: ${href}`)
+  router.push(href)
+}
+
+const testClick = () => {
+  console.log('SIMPLE TEST CLICKED!')
+  alert('SIMPLE TEST CLICKED!')
+}
 </script>
 
 <template>
-  <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-500 hover:scale-[1.02] group p-6 relative overflow-hidden">
-    <!-- Background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+  <div class="p-4 bg-red-500 text-white">
+    <h3 class="text-xl font-bold mb-4">Quick Actions Test</h3>
     
-    <div class="relative z-10">
-      <h3 class="text-xl font-bold text-white mb-6 tracking-wide group-hover:text-green-200 transition-colors duration-300">
-        Quick Actions
-      </h3>
-      
-      <div class="space-y-4">
-        <router-link
-          v-for="action in actions"
-          :key="action.name"
-          :to="action.href"
-          :class="['flex items-center justify-center p-4 rounded-2xl text-white font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl', action.color]"
-        >
-          <component :is="action.icon" class="h-6 w-6 mr-3 drop-shadow-lg" />
-          <span class="text-sm tracking-wide">{{ action.name }}</span>
-        </router-link>
-      </div>
-    </div>
+    <button 
+      @click="handleNavigation('/expenses')"
+      class="block w-full p-4 bg-green-500 hover:bg-green-600 text-white rounded mb-2"
+    >
+      TEST BUTTON - Click Me!
+    </button>
+    
+    <button 
+      @click="testClick"
+      class="block w-full p-4 bg-yellow-500 hover:bg-yellow-600 text-white rounded"
+    >
+      SIMPLE TEST
+    </button>
   </div>
 </template>
 

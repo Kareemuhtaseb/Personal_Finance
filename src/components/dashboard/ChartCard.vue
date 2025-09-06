@@ -9,17 +9,49 @@ const props = defineProps<Props>()
 
 <template>
   <div :class="['backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-500 hover:scale-[1.02] group relative overflow-hidden', props.class]">
-    <!-- Background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <!-- Enhanced background gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+    
+    <!-- Animated border gradient -->
+    <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+    
+    <!-- Shimmer effect on hover -->
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      <div class="animate-shimmer absolute inset-0 rounded-3xl"></div>
+    </div>
+    
+    <!-- Floating accent dots -->
+    <div class="absolute top-6 right-6 w-3 h-3 bg-purple-400/30 rounded-full animate-pulse-glow"></div>
+    <div class="absolute bottom-8 left-8 w-2 h-2 bg-blue-400/40 rounded-full animate-pulse-glow" style="animation-delay: 1.5s;"></div>
+    <div class="absolute top-1/2 right-8 w-1 h-1 bg-pink-400/50 rounded-full animate-pulse-glow" style="animation-delay: 3s;"></div>
     
     <div class="relative z-10">
-      <div class="p-6 border-b border-white/20">
-        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-purple-200 transition-colors duration-300">
-          {{ title }}
-        </h3>
+      <div class="p-6 border-b border-white/20 relative">
+        <!-- Header background glow -->
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-3xl"></div>
+        
+        <div class="relative z-10 flex items-center justify-between">
+          <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-purple-200 transition-colors duration-300 flex items-center">
+            <span class="w-3 h-3 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full mr-3 opacity-80"></span>
+            {{ title }}
+          </h3>
+          
+          <!-- Chart type indicator -->
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-xs text-white/60 font-medium">Live</span>
+          </div>
+        </div>
       </div>
-      <div class="p-6">
-        <slot />
+      
+      <div class="p-6 relative">
+        <!-- Content background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/2 to-transparent rounded-b-3xl"></div>
+        <div class="relative z-10">
+          <slot />
+        </div>
       </div>
     </div>
   </div>

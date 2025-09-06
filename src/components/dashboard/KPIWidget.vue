@@ -42,17 +42,17 @@ const iconComponent = computed(() => {
 const colorClasses = computed(() => {
   switch (props.color) {
     case 'green':
-      return 'bg-gradient-to-br from-green-400/20 to-green-600/20 text-green-400 border-green-400/30'
+      return 'bg-gradient-to-br from-green-500/15 to-green-600/15 text-green-400 border-green-400/20'
     case 'red':
-      return 'bg-gradient-to-br from-red-400/20 to-red-600/20 text-red-400 border-red-400/30'
+      return 'bg-gradient-to-br from-red-500/15 to-red-600/15 text-red-400 border-red-400/20'
     case 'blue':
-      return 'bg-gradient-to-br from-blue-400/20 to-blue-600/20 text-blue-400 border-blue-400/30'
+      return 'bg-gradient-to-br from-slate-500/15 to-slate-600/15 text-slate-400 border-slate-400/20'
     case 'purple':
-      return 'bg-gradient-to-br from-purple-400/20 to-purple-600/20 text-purple-400 border-purple-400/30'
+      return 'bg-gradient-to-br from-gray-500/15 to-gray-600/15 text-gray-400 border-gray-400/20'
     case 'yellow':
-      return 'bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 text-yellow-400 border-yellow-400/30'
+      return 'bg-gradient-to-br from-yellow-500/15 to-yellow-600/15 text-yellow-400 border-yellow-400/20'
     default:
-      return 'bg-gradient-to-br from-gray-400/20 to-gray-600/20 text-gray-400 border-gray-400/30'
+      return 'bg-gradient-to-br from-gray-500/15 to-gray-600/15 text-gray-400 border-gray-400/20'
   }
 })
 
@@ -75,37 +75,66 @@ const formatValue = (value: number) => {
 </script>
 
 <template>
-  <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:scale-[1.02] group p-6 relative overflow-hidden">
-    <!-- Background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+  <div class="card-premium rounded-2xl p-6 relative overflow-hidden group animate-fade-in-scale hover:scale-[1.02] transition-all duration-500">
+    <!-- Enhanced background gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-2xl"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-2xl"></div>
+    
+    <!-- Animated border gradient -->
+    <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-2xl"></div>
+    
+    <!-- Shimmer effect on hover -->
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
+    </div>
+    
+    <!-- Floating particles effect -->
+    <div class="absolute top-4 right-4 w-2 h-2 bg-blue-400/30 rounded-full animate-pulse-glow"></div>
+    <div class="absolute bottom-6 left-6 w-1 h-1 bg-purple-400/40 rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
     
     <div class="relative z-10">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors duration-300">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors duration-300 mb-2 flex items-center">
+            <span class="w-2 h-2 bg-current rounded-full mr-2 opacity-60"></span>
             {{ title }}
           </p>
-          <p class="text-3xl font-bold text-white mt-2 tracking-wide group-hover:text-blue-100 transition-colors duration-300">
+          <p class="text-3xl font-bold text-white tracking-wide group-hover:text-blue-100 transition-colors duration-300 text-render-optimized">
             {{ formatValue(value) }}
           </p>
         </div>
         
-        <div :class="['p-4 rounded-2xl border backdrop-blur-sm shadow-lg', colorClasses]">
-          <component :is="iconComponent" class="h-7 w-7 drop-shadow-lg" />
+        <div :class="['p-4 rounded-xl border backdrop-blur-sm shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 relative', colorClasses]">
+          <!-- Icon background glow -->
+          <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <component :is="iconComponent" class="h-7 w-7 drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300 relative z-10" />
         </div>
       </div>
       
-      <div v-if="change !== 0" class="mt-6 flex items-center">
-        <component
-          :is="props.changeType === 'increase' ? ArrowTrendingUpIcon : ArrowTrendingDownIcon"
-          :class="['h-5 w-5 mr-2', changeColorClasses]"
-        />
-        <span :class="['text-sm font-semibold', changeColorClasses]">
-          {{ props.change > 0 ? '+' : '' }}{{ props.change }}%
-        </span>
-        <span class="text-sm text-white/60 ml-2 group-hover:text-white/80 transition-colors duration-300">
-          from last month
-        </span>
+      <div v-if="change !== 0" class="flex items-center justify-between">
+        <div class="flex items-center">
+          <component
+            :is="props.changeType === 'increase' ? ArrowTrendingUpIcon : ArrowTrendingDownIcon"
+            :class="['h-5 w-5 mr-2 transition-transform duration-300 group-hover:scale-110', changeColorClasses]"
+          />
+          <span :class="['text-sm font-semibold transition-colors duration-300', changeColorClasses]">
+            {{ props.change > 0 ? '+' : '' }}{{ props.change }}%
+          </span>
+          <span class="text-sm text-white/60 ml-2 group-hover:text-white/80 transition-colors duration-300">
+            from last month
+          </span>
+        </div>
+        
+        <!-- Progress indicator -->
+        <div class="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+          <div 
+            :class="['h-full rounded-full transition-all duration-1000', 
+              props.changeType === 'increase' ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-red-400 to-red-500'
+            ]"
+            :style="{ width: `${Math.min(Math.abs(props.change), 100)}%` }"
+          ></div>
+        </div>
       </div>
     </div>
   </div>

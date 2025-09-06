@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { 
   MagnifyingGlassIcon, 
   BellIcon, 
@@ -7,6 +8,7 @@ import {
   MoonIcon,
   Bars3Icon
 } from '@heroicons/vue/24/outline'
+import { useAuthStore } from '../../stores/auth'
 
 interface Emits {
   (e: 'toggle-sidebar'): void
@@ -14,9 +16,16 @@ interface Emits {
 
 defineEmits<Emits>()
 
+const router = useRouter()
+const authStore = useAuthStore()
+
 const isDarkMode = ref(false)
 const showNotifications = ref(false)
 const showUserMenu = ref(false)
+
+// Computed properties
+const userName = computed(() => authStore.userName || 'User')
+const userInitial = computed(() => userName.value.charAt(0).toUpperCase())
 
 const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value
@@ -28,11 +37,7 @@ const toggleDarkMode = () => {
   }
 }
 
-const notifications = [
-  { id: 1, message: 'Budget limit reached for Food category', type: 'warning', time: '2 min ago' },
-  { id: 2, message: 'Invoice #1234 marked as paid', type: 'success', time: '1 hour ago' },
-  { id: 3, message: 'Recurring payment due tomorrow', type: 'info', time: '3 hours ago' }
-]
+const notifications = ref([])
 
 const getNotificationIcon = (type: string) => {
   switch (type) {
@@ -46,12 +51,33 @@ const getNotificationIcon = (type: string) => {
       return '📢'
   }
 }
+
+const handleLogout = async () => {
+  try {
+    await authStore.logout()
+    router.push('/login')
+  } catch (error) {
+    console.error('Logout error:', error)
+    // Still redirect to login even if logout fails
+    router.push('/login')
+  }
+}
+
+const goToSettings = () => {
+  router.push('/settings')
+  showUserMenu.value = false
+}
 </script>
 
 <template>
-  <header class="backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-lg shadow-blue-500/10 relative">
+  <header class="glass-premium border-b border-white/20 shadow-premium relative">
     <!-- Enhanced background for navbar -->
-    <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-white/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-white/6"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent"></div>
+    
+    <!-- Animated border gradient -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-50"></div>
+    <div class="absolute inset-[1px] bg-gradient-to-r from-gray-900/95 to-gray-800/95"></div>
     
     <div class="relative z-10 px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
@@ -60,9 +86,11 @@ const getNotificationIcon = (type: string) => {
           <!-- Mobile menu button -->
           <button
             @click="$emit('toggle-sidebar')"
-            class="lg:hidden p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+            class="lg:hidden p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300 relative overflow-hidden group"
           >
-            <Bars3Icon class="h-6 w-6" />
+            <!-- Button background animation -->
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            <Bars3Icon class="h-6 w-6 relative z-10" />
           </button>
           
           <!-- Search -->
@@ -72,31 +100,37 @@ const getNotificationIcon = (type: string) => {
             </div>
             <input
               type="text"
-              placeholder="Search transactions, invoices..."
-              class="block w-full pl-10 pr-3 py-2 border border-white/20 rounded-xl leading-5 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
+              placeholder="Search expenses, invoices..."
+              class="block w-full pl-10 pr-3 py-2 border border-white/20 rounded-xl leading-5 glass text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300 focus-ring bg-white/5 backdrop-blur-sm"
             />
+            <!-- Search glow effect -->
+            <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           </div>
         </div>
 
         <!-- Right side -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3">
           <!-- Dark mode toggle -->
           <button
             @click="toggleDarkMode"
-            class="p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+            class="p-2 rounded-xl text-white/60 hover:text-white glass hover:glass-hover transition-all duration-300 interactive focus-ring relative overflow-hidden group"
           >
-            <SunIcon v-if="isDarkMode" class="h-5 w-5" />
-            <MoonIcon v-else class="h-5 w-5" />
+            <!-- Button background animation -->
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+            <SunIcon v-if="isDarkMode" class="h-5 w-5 relative z-10" />
+            <MoonIcon v-else class="h-5 w-5 relative z-10" />
           </button>
 
           <!-- Notifications -->
           <div class="relative">
             <button
               @click="showNotifications = !showNotifications"
-              class="p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300 relative"
+              class="p-2 rounded-xl text-white/60 hover:text-white glass hover:glass-hover transition-all duration-300 relative interactive focus-ring overflow-hidden group"
             >
-              <BellIcon class="h-5 w-5" />
-              <span v-if="notifications.length > 0" class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full shadow-lg"></span>
+              <!-- Button background animation -->
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+              <BellIcon class="h-5 w-5 relative z-10" />
+              <span v-if="notifications.length > 0" class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full shadow-lg animate-pulse z-20"></span>
             </button>
 
             <!-- Notifications dropdown -->
@@ -106,7 +140,11 @@ const getNotificationIcon = (type: string) => {
             >
               <div class="p-4">
                 <h3 class="text-lg font-semibold text-white mb-4">Notifications</h3>
-                <div class="space-y-3">
+                <div v-if="notifications.length === 0" class="text-center py-8">
+                  <p class="text-white/60">No notifications yet</p>
+                  <p class="text-white/40 text-sm mt-1">You'll see important updates here</p>
+                </div>
+                <div v-else class="space-y-3">
                   <div
                     v-for="notification in notifications"
                     :key="notification.id"
@@ -129,12 +167,17 @@ const getNotificationIcon = (type: string) => {
           <div class="relative">
             <button
               @click="showUserMenu = !showUserMenu"
-              class="flex items-center space-x-3 p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+              class="flex items-center space-x-3 p-2 rounded-xl text-white/60 hover:text-white glass hover:glass-hover transition-all duration-300 interactive focus-ring relative overflow-hidden group"
             >
-              <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <span class="text-white font-medium text-sm">U</span>
+              <!-- Button background animation -->
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+              
+              <div class="w-8 h-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden">
+                <!-- Avatar background animation -->
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span class="text-white font-medium text-sm relative z-10">{{ userInitial }}</span>
               </div>
-              <span class="hidden md:block text-sm font-medium">Admin User</span>
+              <span class="hidden md:block text-sm font-medium relative z-10">{{ userName }}</span>
             </button>
 
             <!-- User dropdown -->
@@ -143,9 +186,8 @@ const getNotificationIcon = (type: string) => {
               class="absolute right-0 mt-2 w-48 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl shadow-blue-500/20 z-50"
             >
               <div class="py-2">
-                <a href="#" class="block px-4 py-2 text-sm text-white/90 hover:bg-white/10 transition-all duration-300">Profile</a>
-                <a href="#" class="block px-4 py-2 text-sm text-white/90 hover:bg-white/10 transition-all duration-300">Settings</a>
-                <a href="#" class="block px-4 py-2 text-sm text-white/90 hover:bg-white/10 transition-all duration-300">Sign out</a>
+                <button @click="goToSettings" class="block w-full text-left px-4 py-2 text-sm text-white/90 hover:bg-white/10 transition-all duration-300">Settings</button>
+                <button @click="handleLogout" class="block w-full text-left px-4 py-2 text-sm text-white/90 hover:bg-white/10 transition-all duration-300">Sign out</button>
               </div>
             </div>
           </div>

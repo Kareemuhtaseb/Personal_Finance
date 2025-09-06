@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { BriefcaseIcon, ClockIcon, DocumentTextIcon, BanknotesIcon } from '@heroicons/vue/24/outline'
 
 interface FreelanceData {
@@ -9,10 +10,18 @@ interface FreelanceData {
 }
 
 interface Props {
-  data: FreelanceData
+  data: FreelanceData | null
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+// Provide default values when data is null
+const freelanceData = computed(() => props.data || {
+  activeProjects: 0,
+  hoursLogged: 0,
+  unpaidInvoices: 0,
+  totalUnpaid: 0
+})
 
 const formatCurrency = (amount: number) => {
   return amount.toLocaleString('en-US', {
@@ -89,8 +98,8 @@ const kpis = [
             </p>
             
             <p :class="['text-xl font-bold', kpi.textColor]">
-              <span v-if="kpi.name === 'Total Unpaid'">{{ formatCurrency(data.totalUnpaid) }}</span>
-              <span v-else>{{ data[kpi.key] }}</span>
+              <span v-if="kpi.name === 'Total Unpaid'">{{ formatCurrency(freelanceData.totalUnpaid) }}</span>
+              <span v-else>{{ freelanceData[kpi.key as keyof FreelanceData] }}</span>
             </p>
           </div>
         </div>

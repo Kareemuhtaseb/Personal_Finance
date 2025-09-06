@@ -30,18 +30,19 @@ const formatCurrency = (amount: number) => {
 </script>
 
 <template>
-  <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:scale-[1.02] group p-6 relative overflow-hidden">
-    <!-- Background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+  <div class="card-premium rounded-xl p-6 relative overflow-hidden group animate-slide-in-right">
+    <!-- Enhanced background gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-white/6 to-white/3 rounded-xl"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-xl"></div>
     
     <div class="relative z-10">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors duration-300">
+        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors duration-300 text-render-optimized">
           Savings Goals
         </h3>
         <router-link 
           to="/savings"
-          class="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300 font-medium"
+          class="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300 font-medium hover:underline focus-ring rounded-lg px-2 py-1"
         >
           View All
         </router-link>
@@ -49,28 +50,37 @@ const formatCurrency = (amount: number) => {
       
       <div class="space-y-6">
         <div
-          v-for="goal in goals"
+          v-for="(goal, index) in goals"
           :key="goal.name"
-          class="space-y-3 group/item"
+          class="space-y-3 group/item p-4 glass rounded-lg hover:glass-hover transition-all duration-300 interactive"
+          :style="{ animationDelay: `${index * 0.15}s` }"
         >
           <div class="flex items-center justify-between">
             <span class="text-base font-semibold text-white group-hover/item:text-blue-200 transition-colors duration-300">
               {{ goal.name }}
             </span>
-            <span class="text-sm text-white/70 group-hover/item:text-white/90 transition-colors duration-300">
+            <span class="text-sm text-white/70 group-hover/item:text-white/90 transition-colors duration-300 text-render-optimized">
               {{ formatCurrency(goal.current) }} / {{ formatCurrency(goal.target) }}
             </span>
           </div>
           
-          <div class="w-full bg-white/10 backdrop-blur-sm rounded-full h-3 border border-white/20">
+          <div class="w-full bg-white/10 backdrop-blur-sm rounded-full h-4 border border-white/20 overflow-hidden">
             <div
-              :class="['h-3 rounded-full transition-all duration-500 shadow-lg', goal.color]"
+              :class="['h-4 rounded-full transition-all duration-700 shadow-lg relative', goal.color]"
               :style="{ width: `${calculateProgress(goal.current, goal.target)}%` }"
-            ></div>
+            >
+              <!-- Progress bar shimmer effect -->
+              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+            </div>
           </div>
           
-          <div class="text-xs text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
-            {{ calculateProgress(goal.current, goal.target).toFixed(1) }}% complete
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
+              {{ calculateProgress(goal.current, goal.target).toFixed(1) }}% complete
+            </div>
+            <div class="text-xs text-white/50 group-hover/item:text-white/70 transition-colors duration-300">
+              {{ formatCurrency(goal.target - goal.current) }} remaining
+            </div>
           </div>
         </div>
       </div>

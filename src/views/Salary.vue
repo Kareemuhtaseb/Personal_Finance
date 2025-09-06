@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const salary = ref({
-  gross: 75000,
-  deductions: [
-    { name: 'Federal Tax', amount: 15000 },
-    { name: 'State Tax', amount: 5000 },
-    { name: 'Social Security', amount: 4650 },
-    { name: 'Medicare', amount: 1088 },
-    { name: '401k', amount: 7500 }
-  ],
-  net: 42762
+const income = ref({
+  total: 0,
+  sources: [
+    { name: 'Salary', amount: 0, category: 'Employment' },
+    { name: 'Freelance', amount: 0, category: 'Freelance' },
+    { name: 'Investments', amount: 0, category: 'Investment' },
+    { name: 'Rental', amount: 0, category: 'Rental' },
+    { name: 'Other', amount: 0, category: 'Other' }
+  ]
 })
 
-const calculateNet = () => {
-  const totalDeductions = salary.value.deductions.reduce((sum, d) => sum + d.amount, 0)
-  salary.value.net = salary.value.gross - totalDeductions
+const calculateTotal = () => {
+  const totalIncome = income.value.sources.reduce((sum, source) => sum + source.amount, 0)
+  income.value.total = totalIncome
 }
 </script>
 
@@ -24,56 +23,43 @@ const calculateNet = () => {
   <div class="space-y-8">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Salary Management</h1>
+        <h1 class="text-4xl font-bold text-white tracking-wide">Income Management</h1>
         <p class="mt-2 text-lg text-white/70">
-          Track your salary, deductions, and net income
+          Track your income sources and categories
         </p>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Salary Input Form with glassmorphism -->
+      <!-- Income Input Form with glassmorphism -->
       <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 hover:shadow-green-500/30 transition-all duration-500 hover:scale-[1.02] group">
         <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
         <div class="relative z-10">
-          <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-green-200 transition-colors duration-300">Salary Details</h3>
+          <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-green-200 transition-colors duration-300">Income Sources</h3>
           
           <div class="space-y-6">
             <div>
-              <label class="block text-base font-semibold text-white/90 mb-2">
-                Gross Annual Salary
-              </label>
-              <input
-                v-model="salary.gross"
-                type="number"
-                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
-                @input="calculateNet"
-                placeholder="Enter gross salary"
-              />
-            </div>
-            
-            <div>
               <label class="block text-base font-semibold text-white/90 mb-3">
-                Deductions
+                Income Sources
               </label>
               <div class="space-y-3">
                 <div
-                  v-for="(deduction, index) in salary.deductions"
+                  v-for="(source, index) in income.sources"
                   :key="index"
                   class="flex space-x-3"
                 >
                   <input
-                    v-model="deduction.name"
+                    v-model="source.name"
                     type="text"
-                    placeholder="Deduction name"
+                    placeholder="Income source name"
                     class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
                   />
                   <input
-                    v-model="deduction.amount"
+                    v-model="source.amount"
                     type="number"
                     placeholder="Amount"
                     class="w-28 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
-                    @input="calculateNet"
+                    @input="calculateTotal"
                   />
                 </div>
               </div>
@@ -81,9 +67,9 @@ const calculateNet = () => {
             
             <div class="pt-6 border-t border-white/20">
               <div class="flex justify-between items-center">
-                <span class="text-xl font-semibold text-white group-hover:text-green-200 transition-colors duration-300">Net Annual Salary:</span>
+                <span class="text-xl font-semibold text-white group-hover:text-green-200 transition-colors duration-300">Total Annual Income:</span>
                 <span class="text-3xl font-bold text-green-400 group-hover:text-green-300 transition-colors duration-300">
-                  ${{ salary.net.toLocaleString() }}
+                  ${{ income.total.toLocaleString() }}
                 </span>
               </div>
             </div>
@@ -91,31 +77,29 @@ const calculateNet = () => {
         </div>
       </div>
 
-      <!-- Salary Breakdown with glassmorphism -->
+      <!-- Income Breakdown with glassmorphism -->
       <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 hover:shadow-blue-500/30 transition-all duration-500 hover:scale-[1.02] group">
         <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
         <div class="relative z-10">
-          <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-blue-200 transition-colors duration-300">Salary Breakdown</h3>
+          <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-blue-200 transition-colors duration-300">Income Breakdown</h3>
           
           <div class="space-y-4">
-            <div class="flex justify-between items-center p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-              <span class="text-lg font-semibold text-white">Gross Salary</span>
-              <span class="text-xl font-bold text-green-400">${{ salary.gross.toLocaleString() }}</span>
-            </div>
-            
             <div
-              v-for="deduction in salary.deductions"
-              :key="deduction.name"
+              v-for="source in income.sources"
+              :key="source.name"
               class="flex justify-between items-center p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
             >
-              <span class="text-base text-white/90">{{ deduction.name }}</span>
-              <span class="text-lg font-semibold text-red-400">-${{ deduction.amount.toLocaleString() }}</span>
+              <div>
+                <span class="text-base text-white/90">{{ source.name }}</span>
+                <span class="text-sm text-white/60 ml-2">({{ source.category }})</span>
+              </div>
+              <span class="text-lg font-semibold text-green-400">${{ source.amount.toLocaleString() }}</span>
             </div>
             
             <div class="pt-4 border-t border-white/20">
               <div class="flex justify-between items-center">
-                <span class="text-xl font-semibold text-white">Net Salary</span>
-                <span class="text-2xl font-bold text-blue-400">${{ salary.net.toLocaleString() }}</span>
+                <span class="text-xl font-semibold text-white">Total Income</span>
+                <span class="text-2xl font-bold text-blue-400">${{ income.total.toLocaleString() }}</span>
               </div>
             </div>
           </div>
@@ -129,20 +113,15 @@ const calculateNet = () => {
       <div class="relative z-10">
         <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-purple-200 transition-colors duration-300">Monthly Breakdown</h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <p class="text-sm text-white/70 mb-2">Monthly Gross</p>
-            <p class="text-2xl font-bold text-green-400">${{ Math.round(salary.gross / 12).toLocaleString() }}</p>
+            <p class="text-sm text-white/70 mb-2">Monthly Income</p>
+            <p class="text-2xl font-bold text-green-400">${{ Math.round(income.total / 12).toLocaleString() }}</p>
           </div>
           
           <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <p class="text-sm text-white/70 mb-2">Monthly Deductions</p>
-            <p class="text-2xl font-bold text-red-400">${{ Math.round((salary.gross - salary.net) / 12).toLocaleString() }}</p>
-          </div>
-          
-          <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <p class="text-sm text-white/70 mb-2">Monthly Net</p>
-            <p class="text-2xl font-bold text-blue-400">${{ Math.round(salary.net / 12).toLocaleString() }}</p>
+            <p class="text-sm text-white/70 mb-2">Annual Income</p>
+            <p class="text-2xl font-bold text-blue-400">${{ income.total.toLocaleString() }}</p>
           </div>
         </div>
       </div>

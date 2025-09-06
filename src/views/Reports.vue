@@ -1,8 +1,64 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import CashflowChart from '../components/dashboard/CashflowChart.vue'
+import CategoryChart from '../components/dashboard/CategoryChart.vue'
+import BudgetChart from '../components/dashboard/BudgetChart.vue'
 
 const selectedPeriod = ref('month')
 const selectedReport = ref('cashflow')
+
+// Sample data for different report types
+const cashflowData = computed(() => ({
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  income: [5000, 5200, 4800, 5500, 6000, 5800],
+  expenses: [3200, 3400, 3100, 3600, 3800, 3500]
+}))
+
+const categoryData = computed(() => [
+  { name: 'Housing', amount: 1500, color: 'rgb(100, 116, 139)' },
+  { name: 'Food', amount: 800, color: 'rgb(34, 197, 94)' },
+  { name: 'Transport', amount: 400, color: 'rgb(234, 179, 8)' },
+  { name: 'Entertainment', amount: 300, color: 'rgb(107, 114, 128)' },
+  { name: 'Utilities', amount: 200, color: 'rgb(239, 68, 68)' },
+  { name: 'Other', amount: 1000, color: 'rgb(148, 163, 184)' }
+])
+
+const budgetData = computed(() => [
+  { category: 'Housing', budgeted: 1500, actual: 1450 },
+  { category: 'Food', budgeted: 800, actual: 750 },
+  { category: 'Transport', budgeted: 400, actual: 420 },
+  { category: 'Entertainment', budgeted: 300, actual: 280 },
+  { category: 'Utilities', budgeted: 200, actual: 195 },
+  { category: 'Other', budgeted: 1000, actual: 950 }
+])
+
+// Get the appropriate chart component and data based on selected report
+const currentChartData = computed(() => {
+  switch (selectedReport.value) {
+    case 'cashflow':
+      return cashflowData.value
+    case 'categories':
+      return categoryData.value
+    case 'budgets':
+      return budgetData.value
+    default:
+      return cashflowData.value
+  }
+})
+
+const currentChartComponent = computed(() => {
+  switch (selectedReport.value) {
+    case 'cashflow':
+    case 'income-expenses':
+      return CashflowChart
+    case 'categories':
+      return CategoryChart
+    case 'budgets':
+      return BudgetChart
+    default:
+      return CashflowChart
+  }
+})
 </script>
 
 <template>
@@ -70,11 +126,12 @@ const selectedReport = ref('cashflow')
           <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-blue-200 transition-colors duration-300">
             {{ selectedReport.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) }} Report
           </h3>
-          <div class="h-96 flex items-center justify-center text-white/70 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 group-hover:bg-white/10 transition-all duration-500">
-            <div class="text-center">
-              <p class="text-xl font-medium">Chart for {{ selectedReport }} will be implemented here</p>
-              <p class="text-sm text-white/50 mt-2">Interactive data visualization</p>
-            </div>
+          <div class="h-96 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 group-hover:bg-white/10 transition-all duration-500 p-4">
+            <component 
+              :is="currentChartComponent" 
+              :data="currentChartData" 
+              :loading="false"
+            />
           </div>
         </div>
       </div>

@@ -40,38 +40,40 @@ const getAmountColor = (amount: number) => {
 }
 
 const handleViewAll = () => {
-  router.push('/transactions')
+  router.push('/expenses')
 }
 </script>
 
 <template>
-  <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:scale-[1.02] group p-6 relative overflow-hidden">
-    <!-- Background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+  <div class="card-premium rounded-xl p-6 relative overflow-hidden group animate-slide-in-up">
+    <!-- Enhanced background gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-white/6 to-white/3 rounded-xl"></div>
+    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-xl"></div>
     
     <div class="relative z-10">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-orange-200 transition-colors duration-300">
+        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-orange-200 transition-colors duration-300 text-render-optimized">
           Recent Transactions
         </h3>
         <router-link 
-          to="/transactions"
-          class="text-sm text-orange-400 hover:text-orange-300 transition-colors duration-300 font-medium"
+          to="/expenses"
+          class="text-sm text-orange-400 hover:text-orange-300 transition-colors duration-300 font-medium hover:underline focus-ring rounded-lg px-2 py-1"
         >
           View All
         </router-link>
       </div>
       
-      <div class="space-y-4">
+      <div class="space-y-3">
         <div
-          v-for="transaction in transactions"
+          v-for="(transaction, index) in transactions"
           :key="transaction.id"
-          class="flex items-center justify-between p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item"
+          class="flex items-center justify-between p-4 glass rounded-lg hover:glass-hover transition-all duration-300 hover:scale-[1.02] group/item interactive"
+          :style="{ animationDelay: `${index * 0.1}s` }"
         >
           <div class="flex items-center space-x-4">
             <div 
               :class="[
-                'w-3 h-3 rounded-full shadow-lg',
+                'w-4 h-4 rounded-full shadow-lg ring-2 ring-white/20',
                 transaction.type === 'income' ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-gradient-to-r from-red-400 to-red-600'
               ]"
             ></div>
@@ -87,7 +89,7 @@ const handleViewAll = () => {
           
           <span 
             :class="[
-              'text-lg font-bold',
+              'text-lg font-bold text-render-optimized',
               transaction.type === 'income' ? 'text-green-400 group-hover/item:text-green-300' : 'text-red-400 group-hover/item:text-red-300'
             ]"
           >
@@ -97,6 +99,9 @@ const handleViewAll = () => {
       </div>
       
       <div v-if="transactions.length === 0" class="text-center py-8">
+        <div class="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
+          <span class="text-2xl">💳</span>
+        </div>
         <p class="text-white/60 text-sm">
           No recent transactions
         </p>

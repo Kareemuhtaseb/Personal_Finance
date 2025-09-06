@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { 
   ArrowTrendingUpIcon, 
   ArrowTrendingDownIcon, 
@@ -14,226 +14,291 @@ import QuickActions from '../components/dashboard/QuickActions.vue'
 import RecentTransactions from '../components/dashboard/RecentTransactions.vue'
 import SavingsGoals from '../components/dashboard/SavingsGoals.vue'
 import FreelanceKPIs from '../components/dashboard/FreelanceKPIs.vue'
+import CashflowChart from '../components/dashboard/CashflowChart.vue'
+import CategoryChart from '../components/dashboard/CategoryChart.vue'
+import BudgetChart from '../components/dashboard/BudgetChart.vue'
+import { useDashboardStore } from '../stores/dashboard'
+import { useAuthStore } from '../stores/auth'
 
-// Mock data - will be replaced with real API calls
-const monthlyData = ref({
-  income: 8500,
-  expenses: 4200,
-  net: 4300,
-  savings: 1200,
-  freelance: 2800
-})
+// Stores
+const dashboardStore = useDashboardStore()
+const authStore = useAuthStore()
 
-const categoryBreakdown = ref([
-  { name: 'Housing', amount: 1500, color: 'bg-gradient-to-r from-blue-400 to-blue-600' },
-  { name: 'Food', amount: 800, color: 'bg-gradient-to-r from-green-400 to-green-600' },
-  { name: 'Transport', amount: 400, color: 'bg-gradient-to-r from-yellow-400 to-yellow-600' },
-  { name: 'Entertainment', amount: 300, color: 'bg-gradient-to-r from-purple-400 to-purple-600' },
-  { name: 'Utilities', amount: 200, color: 'bg-gradient-to-r from-red-400 to-red-600' },
-  { name: 'Other', amount: 1000, color: 'bg-gradient-to-r from-gray-400 to-gray-600' }
+// Computed properties for real data
+const monthlyData = computed(() => ({
+  income: dashboardStore.monthlyIncome,
+  expenses: dashboardStore.monthlyExpenses,
+  net: dashboardStore.netSavings,
+  savings: dashboardStore.savingsProgress,
+  freelance: dashboardStore.freelanceIncome
+}))
+
+const kpis = computed(() => dashboardStore.kpis)
+const recentTransactions = computed(() => dashboardStore.recentTransactions)
+const savingsGoals = computed(() => dashboardStore.savingsGoals)
+const freelanceData = computed(() => dashboardStore.freelanceSummary)
+
+// Category breakdown data for charts
+const categoryBreakdown = computed(() => [
+  { name: 'Housing', amount: 1500, color: 'rgb(100, 116, 139)' },
+  { name: 'Food', amount: 800, color: 'rgb(34, 197, 94)' },
+  { name: 'Transport', amount: 400, color: 'rgb(234, 179, 8)' },
+  { name: 'Entertainment', amount: 300, color: 'rgb(107, 114, 128)' },
+  { name: 'Utilities', amount: 200, color: 'rgb(239, 68, 68)' },
+  { name: 'Other', amount: 1000, color: 'rgb(148, 163, 184)' }
 ])
 
-const recentTransactions = ref([
-  { id: 1, description: 'Grocery Store', amount: -85.50, category: 'Food', date: '2024-01-15', type: 'expense' },
-  { id: 2, description: 'Freelance Payment', amount: 1200.00, category: 'Income', date: '2024-01-14', type: 'income' },
-  { id: 3, description: 'Gas Station', amount: -45.00, category: 'Transport', date: '2024-01-13', type: 'expense' },
-  { id: 4, description: 'Salary', amount: 5000.00, category: 'Income', date: '2024-01-12', type: 'income' }
+// Cashflow data for charts
+const cashflowData = computed(() => ({
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  income: [5000, 5200, 4800, 5500, 6000, 5800],
+  expenses: [3200, 3400, 3100, 3600, 3800, 3500]
+}))
+
+// Budget vs Actual data
+const budgetData = computed(() => [
+  { category: 'Housing', budgeted: 1500, actual: 1450 },
+  { category: 'Food', budgeted: 800, actual: 750 },
+  { category: 'Transport', budgeted: 400, actual: 420 },
+  { category: 'Entertainment', budgeted: 300, actual: 280 },
+  { category: 'Utilities', budgeted: 200, actual: 195 },
+  { category: 'Other', budgeted: 1000, actual: 950 }
 ])
 
-const savingsGoals = ref([
-  { name: 'Emergency Fund', target: 10000, current: 7500, color: 'bg-gradient-to-r from-green-400 to-green-600' },
-  { name: 'Vacation', target: 5000, current: 3200, color: 'bg-gradient-to-r from-blue-400 to-blue-600' },
-  { name: 'New Car', target: 25000, current: 15000, color: 'bg-gradient-to-r from-purple-400 to-purple-600' }
-])
+// Loading and error states
+const isLoading = computed(() => dashboardStore.isLoading)
+const error = computed(() => dashboardStore.error)
 
-const freelanceData = ref({
-  activeProjects: 3,
-  hoursLogged: 45,
-  unpaidInvoices: 2,
-  totalUnpaid: 3200
-})
-
+// Minimal dashboard setup for testing navigation
 onMounted(() => {
-  // Initialize charts and load data
-  console.log('Dashboard mounted')
+  console.log('Dashboard mounted - navigation test')
 })
 </script>
 
 <template>
-  <!-- Dashboard content without duplicate background -->
-  <div class="space-y-8">
-    <!-- Page header with quick stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <KPIWidget
-        title="Monthly Income"
-        :value="monthlyData.income"
-        icon="arrow-trending-up"
-        color="green"
-        :change="+12.5"
-        changeType="increase"
-      />
-      <KPIWidget
-        title="Monthly Expenses"
-        :value="monthlyData.expenses"
-        icon="arrow-trending-down"
-        color="red"
-        :change="+8.2"
-        changeType="increase"
-      />
-      <KPIWidget
-        title="Net Savings"
-        :value="monthlyData.net"
-        icon="banknotes"
-        color="blue"
-        :change="+15.3"
-        changeType="increase"
-      />
-      <KPIWidget
-        title="Freelance Income"
-        :value="monthlyData.freelance"
-        icon="briefcase"
-        color="purple"
-        :change="+22.1"
-        changeType="increase"
-      />
-    </div>
-
-    <!-- Main content grid -->
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-      <!-- Left column - Main content area (2/3 width) -->
-      <div class="xl:col-span-2 space-y-8">
-        <!-- Cashflow chart with glassmorphism -->
-        <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 hover:shadow-blue-500/30 transition-all duration-500 hover:scale-[1.02] group">
-          <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
-          <div class="relative z-10">
-            <h3 class="text-2xl font-bold text-white mb-6 tracking-wide">
-              Monthly Cashflow
-            </h3>
-            <div class="h-72 flex items-center justify-center text-white/70 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 group-hover:bg-white/10 transition-all duration-500">
-              <div class="text-center">
-                <ArrowTrendingUpIcon class="h-20 w-20 mx-auto mb-6 text-blue-400 drop-shadow-lg" />
-                <p class="text-xl font-medium">Cashflow chart will be implemented with Chart.js</p>
-                <p class="text-sm text-white/50 mt-2">Interactive financial visualization</p>
-              </div>
-            </div>
-          </div>
+  <!-- Enhanced Dashboard with modern layout -->
+  <div class="space-y-8 animate-fade-in">
+    <!-- Enhanced header with greeting -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-4xl font-bold text-white mb-2 animate-slide-in-up">
+            Welcome back, {{ authStore.userName || 'User' }}! 👋
+          </h1>
+          <p class="text-white/70 text-lg animate-slide-in-up" style="animation-delay: 0.1s;">
+            Here's your financial overview for {{ new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }}
+          </p>
         </div>
-
-        <!-- Category breakdown with glassmorphism -->
-        <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-8 hover:shadow-purple-500/30 transition-all duration-500 hover:scale-[1.02] group">
-          <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
-          <div class="relative z-10">
-            <h3 class="text-2xl font-bold text-white mb-8 tracking-wide">
-              Expense Categories
-            </h3>
-            <div class="space-y-4">
-              <div
-                v-for="category in categoryBreakdown"
-                :key="category.name"
-                class="flex items-center justify-between p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item"
-              >
-                <div class="flex items-center space-x-4">
-                  <div :class="['w-5 h-5 rounded-full shadow-lg', category.color]"></div>
-                  <span class="text-lg font-semibold text-white group-hover/item:text-blue-200 transition-colors duration-300">
-                    {{ category.name }}
-                  </span>
-                </div>
-                <span class="text-xl font-bold text-white group-hover/item:text-green-300 transition-colors duration-300">
-                  ${{ category.amount.toLocaleString() }}
-                </span>
-              </div>
-            </div>
+        <div class="hidden md:flex items-center space-x-4 animate-slide-in-right">
+          <div class="text-right">
+            <p class="text-sm text-white/60">Last updated</p>
+            <p class="text-sm font-medium text-white">{{ new Date().toLocaleTimeString() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <span class="text-white font-bold text-lg">{{ new Date().getDate() }}</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Right column - Sidebar (1/3 width) -->
-      <div class="xl:col-span-1 space-y-8">
-        <!-- Quick Actions -->
-        <QuickActions />
-
-        <!-- Savings Goals -->
-        <SavingsGoals :goals="savingsGoals" />
-
-        <!-- Freelance KPIs -->
-        <FreelanceKPIs :data="freelanceData" />
+    <!-- KPI Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="animate-fade-in-scale" style="animation-delay: 0.1s;">
+        <KPIWidget
+          title="Total Income"
+          :value="monthlyData.income"
+          icon="banknotes"
+          color="green"
+          :change="12.5"
+          change-type="increase"
+        />
+      </div>
+      <div class="animate-fade-in-scale" style="animation-delay: 0.2s;">
+        <KPIWidget
+          title="Total Expenses"
+          :value="monthlyData.expenses"
+          icon="credit-card"
+          color="red"
+          :change="8.2"
+          change-type="increase"
+        />
+      </div>
+      <div class="animate-fade-in-scale" style="animation-delay: 0.3s;">
+        <KPIWidget
+          title="Net Savings"
+          :value="monthlyData.net"
+          icon="arrow-trending-up"
+          color="blue"
+          :change="15.3"
+          change-type="increase"
+        />
+      </div>
+      <div class="animate-fade-in-scale" style="animation-delay: 0.4s;">
+        <KPIWidget
+          title="Freelance Income"
+          :value="monthlyData.freelance"
+          icon="briefcase"
+          color="purple"
+          :change="22.1"
+          change-type="increase"
+        />
       </div>
     </div>
 
-    <!-- Bottom row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Charts and Analytics Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Cashflow Chart -->
+      <div class="animate-slide-in-up" style="animation-delay: 0.5s;">
+        <ChartCard title="Cashflow Trend" class="h-96">
+          <CashflowChart :data="cashflowData" />
+        </ChartCard>
+      </div>
+      
+      <!-- Category Breakdown -->
+      <div class="animate-slide-in-up" style="animation-delay: 0.6s;">
+        <ChartCard title="Expense Categories" class="h-96">
+          <CategoryChart :data="categoryBreakdown" />
+        </ChartCard>
+      </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Recent Transactions -->
-      <RecentTransactions :transactions="recentTransactions" />
-
-      <!-- Budget vs Actual -->
-      <ChartCard title="Budget vs Actual" class="h-80">
-        <div class="h-full flex items-center justify-center text-white/70">
-          <div class="text-center">
-            <CreditCardIcon class="h-16 w-16 mx-auto mb-4 text-green-400 drop-shadow-lg" />
-            <p class="text-lg font-medium">Budget comparison chart will be implemented</p>
-            <p class="text-sm text-white/50 mt-2">Visual budget tracking</p>
-          </div>
-        </div>
-      </ChartCard>
+      <div class="lg:col-span-2 animate-slide-in-up" style="animation-delay: 0.7s;">
+        <ChartCard title="Recent Transactions" class="h-96">
+          <RecentTransactions :transactions="recentTransactions" />
+        </ChartCard>
+      </div>
+      
+      <!-- Quick Actions & Savings Goals -->
+      <div class="space-y-6 animate-slide-in-up" style="animation-delay: 0.8s;">
+        <QuickActions />
+        <SavingsGoals :goals="savingsGoals" />
+      </div>
     </div>
 
-    <!-- Upcoming recurring items with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 hover:shadow-green-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
-      <div class="relative z-10">
-        <h3 class="text-2xl font-bold text-white mb-6 tracking-wide">
-          Upcoming Recurring Items
-        </h3>
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item">
-            <div class="flex items-center space-x-4">
-              <div class="p-2 bg-blue-500/20 rounded-xl border border-blue-400/30">
-                <ClockIcon class="h-6 w-6 text-blue-400" />
-              </div>
-              <div>
-                <p class="text-base font-semibold text-white group-hover/item:text-blue-200 transition-colors duration-300">Rent Payment</p>
-                <p class="text-sm text-white/60 group-hover/item:text-white/80 transition-colors duration-300">Due in 3 days</p>
-              </div>
-            </div>
-            <span class="text-lg font-bold text-red-400 group-hover/item:text-red-300 transition-colors duration-300">-$1,200</span>
-          </div>
-          
-          <div class="flex items-center justify-between p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item">
-            <div class="flex items-center space-x-4">
-              <div class="p-2 bg-green-500/20 rounded-xl border border-green-400/30">
-                <DocumentTextIcon class="h-6 w-6 text-green-400" />
-              </div>
-              <div>
-                <p class="text-base font-semibold text-white group-hover/item:text-green-200 transition-colors duration-300">Salary</p>
-                <p class="text-sm text-white/60 group-hover/item:text-white/80 transition-colors duration-300">Due in 5 days</p>
-              </div>
-            </div>
-            <span class="text-lg font-bold text-green-400 group-hover/item:text-green-300 transition-colors duration-300">+$5,000</span>
-          </div>
-        </div>
-      </div>
+    <!-- Freelance KPIs Section -->
+    <div class="animate-slide-in-up" style="animation-delay: 0.9s;">
+      <FreelanceKPIs :data="freelanceData" />
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Custom glassmorphism enhancements */
+/* Enhanced animations */
+@keyframes fadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateY(20px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  0% { 
+    opacity: 0; 
+    transform: translateY(30px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  0% { 
+    opacity: 0; 
+    transform: translateX(30px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.9);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(0.5deg); }
+  66% { transform: translateY(-12px) rotate(-0.5deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.5s ease-out;
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced glassmorphism */
 .backdrop-blur-xl {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
-/* Smooth animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-/* Enhanced shadows */
+/* Premium shadows */
 .shadow-2xl {
   box-shadow: 
     0 25px 50px -12px rgba(0, 0, 0, 0.25),
@@ -241,9 +306,32 @@ onMounted(() => {
     0 0 40px rgba(59, 130, 246, 0.1);
 }
 
+.shadow-premium {
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 30px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
 /* Gradient text effects */
 .text-gradient {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-secondary {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -255,7 +343,7 @@ onMounted(() => {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover effects */
+/* Enhanced hover effects */
 .group:hover .group-hover\:scale-\[1\.02\] {
   transform: scale(1.02);
 }
@@ -274,5 +362,41 @@ onMounted(() => {
 
 .group:hover .group-hover\:text-white\/80 {
   color: rgba(255, 255, 255, 0.8);
+}
+
+/* Interactive elements */
+.interactive {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+}
+
+.interactive:active {
+  transform: translateY(0);
+}
+
+/* Loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1) 25%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Focus states for accessibility */
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-ring:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
 }
 </style>
