@@ -38,54 +38,48 @@ const recentTransactions = computed(() => dashboardStore.recentTransactions)
 const savingsGoals = computed(() => dashboardStore.savingsGoals)
 const freelanceData = computed(() => dashboardStore.freelanceSummary)
 
-// Category breakdown data for charts
-const categoryBreakdown = computed(() => [
-  { name: 'Housing', amount: 1500, color: 'rgb(100, 116, 139)' },
-  { name: 'Food', amount: 800, color: 'rgb(34, 197, 94)' },
-  { name: 'Transport', amount: 400, color: 'rgb(234, 179, 8)' },
-  { name: 'Entertainment', amount: 300, color: 'rgb(107, 114, 128)' },
-  { name: 'Utilities', amount: 200, color: 'rgb(239, 68, 68)' },
-  { name: 'Other', amount: 1000, color: 'rgb(148, 163, 184)' }
-])
+// Category breakdown data for charts - will be populated from real data
+const categoryBreakdown = computed(() => dashboardStore.categoryBreakdown || [])
 
-// Cashflow data for charts
-const cashflowData = computed(() => ({
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  income: [5000, 5200, 4800, 5500, 6000, 5800],
-  expenses: [3200, 3400, 3100, 3600, 3800, 3500]
-}))
+// Cashflow data for charts - will be populated from real data
+const cashflowData = computed(() => dashboardStore.cashflowData || null)
 
-// Budget vs Actual data
-const budgetData = computed(() => [
-  { category: 'Housing', budgeted: 1500, actual: 1450 },
-  { category: 'Food', budgeted: 800, actual: 750 },
-  { category: 'Transport', budgeted: 400, actual: 420 },
-  { category: 'Entertainment', budgeted: 300, actual: 280 },
-  { category: 'Utilities', budgeted: 200, actual: 195 },
-  { category: 'Other', budgeted: 1000, actual: 950 }
-])
+// Budget vs Actual data - will be populated from real data
+const budgetData = computed(() => dashboardStore.budgetData || [])
 
 // Loading and error states
 const isLoading = computed(() => dashboardStore.isLoading)
 const error = computed(() => dashboardStore.error)
 
-// Minimal dashboard setup for testing navigation
-onMounted(() => {
-  console.log('Dashboard mounted - navigation test')
+// Load dashboard data on mount
+onMounted(async () => {
+  await dashboardStore.fetchAllDashboardData()
 })
 </script>
 
 <template>
   <!-- Enhanced Dashboard with modern layout -->
-  <div class="space-y-8 animate-fade-in">
+  <div class="space-premium animate-fade-in">
+    <!-- Error State -->
+    <div v-if="error" class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center">
+          <span class="text-red-400 text-sm">⚠️</span>
+        </div>
+        <div>
+          <p class="text-red-400 font-medium">Error loading dashboard data</p>
+          <p class="text-red-300/70 text-sm">{{ error }}</p>
+        </div>
+      </div>
+    </div>
     <!-- Enhanced header with greeting -->
     <div class="mb-8">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-4xl font-bold text-white mb-2 animate-slide-in-up">
+          <h1 class="text-premium-large mb-2 animate-slide-in-up">
             Welcome back, {{ authStore.userName || 'User' }}! 👋
           </h1>
-          <p class="text-white/70 text-lg animate-slide-in-up" style="animation-delay: 0.1s;">
+          <p class="text-premium-muted text-lg animate-slide-in-up" style="animation-delay: 0.1s;">
             Here's your financial overview for {{ new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }}
           </p>
         </div>
@@ -101,8 +95,17 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div v-for="i in 4" :key="i" class="card-premium rounded-2xl p-6 animate-pulse">
+        <div class="h-4 bg-white/20 rounded mb-4"></div>
+        <div class="h-8 bg-white/20 rounded mb-2"></div>
+        <div class="h-3 bg-white/10 rounded w-2/3"></div>
+      </div>
+    </div>
+
     <!-- KPI Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div v-else class="grid-premium-4 mb-8">
       <div class="animate-fade-in-scale" style="animation-delay: 0.1s;">
         <KPIWidget
           title="Total Income"
@@ -146,18 +149,18 @@ onMounted(() => {
     </div>
 
     <!-- Charts and Analytics Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="grid-premium-2 mb-8">
       <!-- Cashflow Chart -->
       <div class="animate-slide-in-up" style="animation-delay: 0.5s;">
         <ChartCard title="Cashflow Trend" class="h-96">
-          <CashflowChart :data="cashflowData" />
+          <CashflowChart :data="cashflowData" :loading="isLoading" />
         </ChartCard>
       </div>
       
       <!-- Category Breakdown -->
       <div class="animate-slide-in-up" style="animation-delay: 0.6s;">
         <ChartCard title="Expense Categories" class="h-96">
-          <CategoryChart :data="categoryBreakdown" />
+          <CategoryChart :data="categoryBreakdown" :loading="isLoading" />
         </ChartCard>
       </div>
     </div>

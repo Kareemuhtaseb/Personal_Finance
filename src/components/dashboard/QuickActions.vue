@@ -12,34 +12,42 @@ const actions = [
 ]
 
 const handleNavigation = (href: string) => {
-  console.log('Button clicked! Navigating to:', href)
-  alert(`Button clicked! Would navigate to: ${href}`)
   router.push(href)
-}
-
-const testClick = () => {
-  console.log('SIMPLE TEST CLICKED!')
-  alert('SIMPLE TEST CLICKED!')
 }
 </script>
 
 <template>
-  <div class="p-4 bg-red-500 text-white">
-    <h3 class="text-xl font-bold mb-4">Quick Actions Test</h3>
-    
-    <button 
-      @click="handleNavigation('/expenses')"
-      class="block w-full p-4 bg-green-500 hover:bg-green-600 text-white rounded mb-2"
-    >
-      TEST BUTTON - Click Me!
-    </button>
-    
-    <button 
-      @click="testClick"
-      class="block w-full p-4 bg-yellow-500 hover:bg-yellow-600 text-white rounded"
-    >
-      SIMPLE TEST
-    </button>
+  <div class="glass-card rounded-xl p-6 relative overflow-hidden group animate-slide-in-up">
+    <div class="relative z-10">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-premium-medium group-hover:text-green-200 transition-colors duration-300">
+          Quick Actions
+        </h3>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-3">
+        <button
+          v-for="(action, index) in actions"
+          :key="action.name"
+          @click="handleNavigation(action.href)"
+          :class="[
+            'p-4 rounded-xl text-white font-medium transition-all duration-300 hover:scale-105 focus-ring group/action relative overflow-hidden',
+            action.color
+          ]"
+          :style="{ animationDelay: `${index * 0.1}s` }"
+        >
+          <!-- Button background glow -->
+          <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover/action:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative z-10 flex flex-col items-center space-y-2">
+            <component :is="action.icon" class="icon-premium group-hover/action:scale-110 transition-transform duration-300" />
+            <span class="text-sm font-semibold group-hover/action:text-white/90 transition-colors duration-300">
+              {{ action.name }}
+            </span>
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 

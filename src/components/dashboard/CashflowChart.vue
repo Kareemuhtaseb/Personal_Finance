@@ -38,22 +38,20 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false
 })
 
-// Default mock data for when no real data is available
-const defaultData = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  income: [5000, 5200, 4800, 5500, 6000, 5800],
-  expenses: [3200, 3400, 3100, 3600, 3800, 3500]
-}
-
 const chartData = computed(() => {
-  const data = props.data || defaultData
+  if (!props.data) {
+    return {
+      labels: [],
+      datasets: []
+    }
+  }
   
   return {
-    labels: data.labels,
+    labels: props.data.labels,
     datasets: [
       {
         label: 'Income',
-        data: data.income,
+        data: props.data.income,
         borderColor: 'rgb(34, 197, 94)',
         backgroundColor: 'rgba(34, 197, 94, 0.1)',
         borderWidth: 3,
@@ -67,7 +65,7 @@ const chartData = computed(() => {
       },
       {
         label: 'Expenses',
-        data: data.expenses,
+        data: props.data.expenses,
         borderColor: 'rgb(239, 68, 68)',
         backgroundColor: 'rgba(239, 68, 68, 0.1)',
         borderWidth: 3,
@@ -162,8 +160,16 @@ const chartOptions = {
         <p class="text-white/70">Loading chart data...</p>
       </div>
     </div>
-    <div v-else class="h-full">
+    <div v-else-if="props.data" class="h-full">
       <Line :data="chartData" :options="chartOptions" />
+    </div>
+    <div v-else class="h-full flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
+          <span class="text-2xl">📊</span>
+        </div>
+        <p class="text-white/60 text-sm">No cashflow data available</p>
+      </div>
     </div>
   </div>
 </template>

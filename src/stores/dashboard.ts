@@ -17,6 +17,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const savingsGoals = ref<SavingsGoal[]>([])
   const freelanceSummary = ref<FreelanceSummary | null>(null)
   const upcomingRecurring = ref<RecurringTransaction[]>([])
+  const categoryBreakdown = ref<any[]>([])
+  const cashflowData = ref<any>(null)
+  const budgetData = ref<any[]>([])
   
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -230,6 +233,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
     savingsGoals.value = []
     freelanceSummary.value = null
     upcomingRecurring.value = []
+    categoryBreakdown.value = []
+    cashflowData.value = null
+    budgetData.value = []
     error.value = null
   }
 
@@ -241,6 +247,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
     savingsGoals,
     freelanceSummary,
     upcomingRecurring,
+    categoryBreakdown,
+    cashflowData,
+    budgetData,
     isLoading,
     error,
     

@@ -45,14 +45,10 @@ const handleViewAll = () => {
 </script>
 
 <template>
-  <div class="card-premium rounded-xl p-6 relative overflow-hidden group animate-slide-in-up">
-    <!-- Enhanced background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/6 to-white/3 rounded-xl"></div>
-    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-xl"></div>
-    
+  <div class="glass-card rounded-xl p-6 relative overflow-hidden group animate-slide-in-up">
     <div class="relative z-10">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-orange-200 transition-colors duration-300 text-render-optimized">
+        <h3 class="text-premium-medium group-hover:text-orange-200 transition-colors duration-300">
           Recent Transactions
         </h3>
         <router-link 
@@ -78,10 +74,10 @@ const handleViewAll = () => {
               ]"
             ></div>
             <div>
-              <p class="text-base font-semibold text-white group-hover/item:text-orange-200 transition-colors duration-300">
+              <p class="text-base font-semibold text-premium group-hover/item:text-orange-200 transition-colors duration-300">
                 {{ transaction.description }}
               </p>
-              <p class="text-sm text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
+              <p class="text-sm text-premium-muted group-hover/item:text-white/80 transition-colors duration-300">
                 {{ transaction.category }} • {{ formatDate(transaction.date) }}
               </p>
             </div>

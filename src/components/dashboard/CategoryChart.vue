@@ -26,18 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false
 })
 
-// Default mock data for when no real data is available
-const defaultData: CategoryData[] = [
-  { name: 'Housing', amount: 1500, color: 'rgb(100, 116, 139)' },
-  { name: 'Food', amount: 800, color: 'rgb(34, 197, 94)' },
-  { name: 'Transport', amount: 400, color: 'rgb(234, 179, 8)' },
-  { name: 'Entertainment', amount: 300, color: 'rgb(107, 114, 128)' },
-  { name: 'Utilities', amount: 200, color: 'rgb(239, 68, 68)' },
-  { name: 'Other', amount: 1000, color: 'rgb(148, 163, 184)' }
-]
-
 const chartData = computed(() => {
-  const data = props.data || defaultData
+  const data = props.data || []
   
   return {
     labels: data.map(item => item.name),
@@ -133,8 +123,16 @@ const chartOptions = {
         <p class="text-white/70">Loading chart data...</p>
       </div>
     </div>
-    <div v-else class="h-full">
+    <div v-else-if="props.data && props.data.length > 0" class="h-full">
       <Doughnut :data="chartData" :options="chartOptions" />
+    </div>
+    <div v-else class="h-full flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
+          <span class="text-2xl">🥧</span>
+        </div>
+        <p class="text-white/60 text-sm">No category data available</p>
+      </div>
     </div>
   </div>
 </template>

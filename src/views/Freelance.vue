@@ -380,12 +380,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-8">
+  <div class="space-premium">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Freelance Management</h1>
-        <p class="mt-2 text-lg text-white/70">
+        <h1 class="text-premium-large">Freelance Management</h1>
+        <p class="mt-2 text-lg text-premium-muted">
           Track projects, time, and manage payments
         </p>
       </div>
@@ -393,13 +393,13 @@ onMounted(() => {
       <div class="mt-4 sm:mt-0 space-x-3">
         <button 
           @click="showNewProjectModal = true"
-          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-success inline-flex items-center"
         >
           + New Project
         </button>
         <button 
           @click="showManualWorkModal = true"
-          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-purple inline-flex items-center"
         >
           + Add Hours
         </button>
@@ -411,58 +411,58 @@ onMounted(() => {
       <p class="text-red-200">{{ error }}</p>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-6">
+    <!-- Summary Cards - Using Global Theme -->
+    <div class="grid-premium-4">
+      <div class="kpi-card rounded-xl shadow-green-500/20 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-white/70 text-sm">Active Projects</p>
-            <p class="text-3xl font-bold text-white">{{ activeProjects.length }}</p>
+            <p class="text-premium-subtle text-xs">Active Projects</p>
+            <p class="text-premium-small">{{ activeProjects.length }}</p>
           </div>
-          <div class="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center">
-            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <svg class="icon-premium-sm text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
             </svg>
           </div>
         </div>
       </div>
 
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-6">
+      <div class="kpi-card rounded-xl shadow-blue-500/20 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-white/70 text-sm">Total Hours</p>
-            <p class="text-3xl font-bold text-white">{{ formatDuration(totalHours) }}</p>
+            <p class="text-premium-subtle text-xs">Total Hours</p>
+            <p class="text-premium-small">{{ formatDuration(totalHours) }}</p>
           </div>
-          <div class="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center">
-            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <svg class="icon-premium-sm text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
         </div>
       </div>
 
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-yellow-500/20 p-6">
+      <div class="kpi-card rounded-xl shadow-yellow-500/20 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-white/70 text-sm">Unpaid Hours</p>
-            <p class="text-3xl font-bold text-white">{{ formatDuration(unpaidHours) }}</p>
+            <p class="text-premium-subtle text-xs">Unpaid Hours</p>
+            <p class="text-premium-small">{{ formatDuration(unpaidHours) }}</p>
           </div>
-          <div class="w-12 h-12 bg-yellow-500/20 rounded-2xl flex items-center justify-center">
-            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+            <svg class="icon-premium-sm text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
           </div>
         </div>
       </div>
 
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-6">
+      <div class="kpi-card rounded-xl shadow-purple-500/20 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-white/70 text-sm">Total Earnings</p>
-            <p class="text-3xl font-bold text-white">{{ formatCurrency(totalEarnings) }}</p>
+            <p class="text-premium-subtle text-xs">Total Earnings</p>
+            <p class="text-premium-small">{{ formatCurrency(totalEarnings) }}</p>
           </div>
-          <div class="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center">
-            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+            <svg class="icon-premium-sm text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
           </div>
@@ -586,24 +586,28 @@ onMounted(() => {
             
                 <div class="grid grid-cols-2 gap-3 text-sm">
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-                <span class="text-white/70">Rate:</span>
+                    <span class="text-white/70">Rate:</span>
                     <span class="font-semibold text-white">{{ formatCurrency(project.hourlyRate) }}/h</span>
-              </div>
+                  </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-                <span class="text-white/70">Payment:</span>
+                    <span class="text-white/70">Payment:</span>
                     <span class="font-semibold text-white">{{ project.paymentType === 'HOURLY_RATE' ? 'Hourly' : 'Custom' }}</span>
-              </div>
+                  </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-                <span class="text-white/70">Total Hours:</span>
-                    <span class="font-semibold text-white">{{ formatDuration(project.totalHours) }}</span>
-              </div>
+                    <span class="text-white/70">Total Hours:</span>
+                    <span class="font-semibold text-white">{{ formatDuration(project.totalHours || 0) }}</span>
+                  </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-                <span class="text-white/70">Paid Hours:</span>
-                    <span class="font-semibold text-green-400">{{ formatDuration(project.paidHours) }}</span>
-              </div>
+                    <span class="text-white/70">Paid Hours:</span>
+                    <span class="font-semibold text-green-400">{{ formatDuration(project.paidHours || 0) }}</span>
+                  </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-                <span class="text-white/70">Unpaid Hours:</span>
-                    <span class="font-semibold text-yellow-400">{{ formatDuration(project.unpaidHours) }}</span>
+                    <span class="text-white/70">Unpaid Hours:</span>
+                    <span class="font-semibold text-yellow-400">{{ formatDuration(project.unpaidHours || 0) }}</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                    <span class="text-white/70">Total Amount:</span>
+                    <span class="font-semibold text-white">{{ formatCurrency(project.totalAmount || 0) }}</span>
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Status:</span>
@@ -705,15 +709,19 @@ onMounted(() => {
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Total Hours:</span>
-                    <span class="font-semibold text-white">{{ formatDuration(project.totalHours) }}</span>
+                    <span class="font-semibold text-white">{{ formatDuration(project.totalHours || 0) }}</span>
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Paid Hours:</span>
-                    <span class="font-semibold text-green-400">{{ formatDuration(project.paidHours) }}</span>
+                    <span class="font-semibold text-green-400">{{ formatDuration(project.paidHours || 0) }}</span>
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Unpaid Hours:</span>
-                    <span class="font-semibold text-yellow-400">{{ formatDuration(project.unpaidHours) }}</span>
+                    <span class="font-semibold text-yellow-400">{{ formatDuration(project.unpaidHours || 0) }}</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                    <span class="text-white/70">Total Amount:</span>
+                    <span class="font-semibold text-white">{{ formatCurrency(project.totalAmount || 0) }}</span>
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Status:</span>
@@ -813,15 +821,25 @@ onMounted(() => {
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span class="text-white/70">Duration:</span>
-                <span class="ml-1 font-semibold text-white">{{ session.workHours || 'In Progress' }}</span>
+                <span class="ml-1 font-semibold text-white">
+                  {{ session.workHours ? formatDuration(Number(session.workHours)) : 'In Progress' }}
+                </span>
               </div>
               <div>
                 <span class="text-white/70">Date:</span>
                 <span class="ml-1 font-semibold text-white">{{ formatDate(session.startTime) }}</span>
               </div>
+              <div v-if="session.description" class="col-span-2">
+                <span class="text-white/70">Description:</span>
+                <span class="ml-1 font-semibold text-white">{{ session.description || 'No description' }}</span>
+              </div>
               <div v-if="session.customAmount" class="col-span-2">
                 <span class="text-white/70">Custom Amount:</span>
                 <span class="ml-1 font-semibold text-white">{{ formatCurrency(session.customAmount / 100) }}</span>
+              </div>
+              <div v-if="session.project.paymentType === 'HOURLY_RATE' && session.workHours" class="col-span-2">
+                <span class="text-white/70">Calculated Amount:</span>
+                <span class="ml-1 font-semibold text-white">{{ formatCurrency(Number(session.workHours) * (session.project as any).hourlyRate) }}</span>
               </div>
             </div>
           </div>
@@ -830,8 +848,8 @@ onMounted(() => {
     </div>
 
     <!-- New Project Modal -->
-    <div v-if="showNewProjectModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4">
+    <div v-if="showNewProjectModal" class="modal-backdrop">
+      <div class="modal-content">
         <h3 class="text-2xl font-bold text-white mb-6">Create New Project</h3>
         
         <div class="space-y-4">
@@ -840,7 +858,7 @@ onMounted(() => {
             <input 
               v-model="newProject.name"
               type="text" 
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
+              class="input-premium"
               placeholder="Enter project name"
             />
           </div>
@@ -850,7 +868,7 @@ onMounted(() => {
             <input 
               v-model="newProject.client"
               type="text" 
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
+              class="input-premium"
               placeholder="Enter client name"
             />
           </div>
@@ -861,7 +879,7 @@ onMounted(() => {
               v-model.number="newProject.hourlyRate"
               type="number" 
               step="0.01"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
+              class="input-premium"
               placeholder="0.00"
             />
           </div>
@@ -870,7 +888,7 @@ onMounted(() => {
             <label class="block text-white/70 text-sm mb-2">Payment Type</label>
             <select 
               v-model="newProject.paymentType"
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-500"
+              class="select-premium"
             >
               <option value="HOURLY_RATE">Hourly Rate Payment</option>
               <option value="REFERENCE_ONLY">Reference Only (Custom Amounts)</option>
@@ -886,13 +904,13 @@ onMounted(() => {
         <div class="flex space-x-3 mt-6">
           <button 
             @click="createProject"
-            class="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors"
+            class="btn-success flex-1"
           >
             Create Project
           </button>
           <button 
             @click="showNewProjectModal = false"
-            class="flex-1 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-xl transition-colors"
+            class="btn-primary flex-1 bg-gray-500 hover:bg-gray-600"
           >
             Cancel
           </button>

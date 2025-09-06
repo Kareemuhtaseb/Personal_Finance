@@ -36,18 +36,8 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false
 })
 
-// Default mock data for when no real data is available
-const defaultData: BudgetData[] = [
-  { category: 'Housing', budgeted: 1500, actual: 1450 },
-  { category: 'Food', budgeted: 800, actual: 750 },
-  { category: 'Transport', budgeted: 400, actual: 420 },
-  { category: 'Entertainment', budgeted: 300, actual: 280 },
-  { category: 'Utilities', budgeted: 200, actual: 195 },
-  { category: 'Other', budgeted: 1000, actual: 950 }
-]
-
 const chartData = computed(() => {
-  const data = props.data || defaultData
+  const data = props.data || []
   
   return {
     labels: data.map(item => item.category),
@@ -153,8 +143,16 @@ const chartOptions = {
         <p class="text-white/70">Loading chart data...</p>
       </div>
     </div>
-    <div v-else class="h-full">
+    <div v-else-if="props.data && props.data.length > 0" class="h-full">
       <Bar :data="chartData" :options="chartOptions" />
+    </div>
+    <div v-else class="h-full flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
+          <span class="text-2xl">📊</span>
+        </div>
+        <p class="text-white/60 text-sm">No budget data available</p>
+      </div>
     </div>
   </div>
 </template>

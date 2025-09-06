@@ -30,14 +30,10 @@ const formatCurrency = (amount: number) => {
 </script>
 
 <template>
-  <div class="card-premium rounded-xl p-6 relative overflow-hidden group animate-slide-in-right">
-    <!-- Enhanced background gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-br from-white/6 to-white/3 rounded-xl"></div>
-    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-xl"></div>
-    
+  <div class="glass-card rounded-xl p-6 relative overflow-hidden group animate-slide-in-right">
     <div class="relative z-10">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors duration-300 text-render-optimized">
+        <h3 class="text-premium-medium group-hover:text-blue-200 transition-colors duration-300">
           Savings Goals
         </h3>
         <router-link 
@@ -56,10 +52,10 @@ const formatCurrency = (amount: number) => {
           :style="{ animationDelay: `${index * 0.15}s` }"
         >
           <div class="flex items-center justify-between">
-            <span class="text-base font-semibold text-white group-hover/item:text-blue-200 transition-colors duration-300">
+            <span class="text-base font-semibold text-premium group-hover/item:text-blue-200 transition-colors duration-300">
               {{ goal.name }}
             </span>
-            <span class="text-sm text-white/70 group-hover/item:text-white/90 transition-colors duration-300 text-render-optimized">
+            <span class="text-sm text-premium-muted group-hover/item:text-white/90 transition-colors duration-300">
               {{ formatCurrency(goal.current) }} / {{ formatCurrency(goal.target) }}
             </span>
           </div>
@@ -75,10 +71,10 @@ const formatCurrency = (amount: number) => {
           </div>
           
           <div class="flex items-center justify-between">
-            <div class="text-xs text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
+            <div class="text-xs text-premium-subtle group-hover/item:text-white/80 transition-colors duration-300">
               {{ calculateProgress(goal.current, goal.target).toFixed(1) }}% complete
             </div>
-            <div class="text-xs text-white/50 group-hover/item:text-white/70 transition-colors duration-300">
+            <div class="text-xs text-premium-subtle group-hover/item:text-white/70 transition-colors duration-300">
               {{ formatCurrency(goal.target - goal.current) }} remaining
             </div>
           </div>
