@@ -29,9 +29,6 @@ const navigation = [
     <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 opacity-50"></div>
     <div class="absolute inset-[1px] bg-gradient-to-t from-gray-900/95 to-gray-800/95"></div>
     
-    <!-- Floating particles -->
-    <div class="absolute top-2 left-1/4 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse-glow"></div>
-    <div class="absolute top-2 right-1/4 w-1.5 h-1.5 bg-purple-400/30 rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
     
     <div class="relative z-10 flex items-center justify-around px-2 py-3">
       <router-link
@@ -67,8 +64,6 @@ const navigation = [
           <span class="text-xs font-medium relative z-10">{{ item.name }}</span>
         </div>
         
-        <!-- Active indicator -->
-        <div v-if="$route.path === item.href" class="absolute top-1 right-1 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
       </router-link>
     </div>
     
@@ -109,14 +104,6 @@ const navigation = [
 }
 
 /* Animation keyframes */
-@keyframes pulse-glow {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-  50% { 
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
-  }
-}
 
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
@@ -124,9 +111,6 @@ const navigation = [
 }
 
 /* Animation classes */
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
-}
 
 .animate-shimmer {
   position: relative;

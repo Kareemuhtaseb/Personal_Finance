@@ -181,30 +181,37 @@ const deleteTransaction = async () => {
 
 <template>
   <!-- Transactions content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <!-- Page header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Expenses</h1>
+        <h1 class="text-3xl font-bold text-white tracking-wide">Transactions</h1>
         <p class="mt-2 text-lg text-white/70">
-          Track and manage your expenses
+          Track and manage all your transactions
         </p>
       </div>
       
       <div class="mt-4 sm:mt-0">
         <button
           @click="showAddModal = true"
-          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-success inline-flex items-center"
         >
           <PlusIcon class="h-5 w-5 mr-2" />
-          Add Expense
+          Add Transaction
         </button>
       </div>
     </div>
 
     <!-- Filters and search with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-orange-500/20 p-8 hover:shadow-orange-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-orange-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-red-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div>

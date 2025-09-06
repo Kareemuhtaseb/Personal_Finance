@@ -63,10 +63,10 @@ const currentChartComponent = computed(() => {
 
 <template>
   <!-- Reports content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Financial Reports</h1>
+        <h1 class="text-premium-large">Financial Reports</h1>
         <p class="mt-2 text-lg text-white/70">
           Analyze your financial data with comprehensive reports
         </p>
@@ -75,7 +75,7 @@ const currentChartComponent = computed(() => {
       <div class="mt-4 sm:mt-0 space-x-3">
         <select
           v-model="selectedPeriod"
-          class="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
+          class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
         >
           <option value="week">This Week</option>
           <option value="month">This Month</option>
@@ -83,15 +83,22 @@ const currentChartComponent = computed(() => {
           <option value="year">This Year</option>
         </select>
         
-        <button class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+        <button class="btn-success inline-flex items-center">
           Export PDF
         </button>
       </div>
     </div>
 
     <!-- Report Type Selector with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-8 hover:shadow-purple-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-purple-200 transition-colors duration-300">Report Type</h3>
         

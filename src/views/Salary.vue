@@ -20,10 +20,10 @@ const calculateTotal = () => {
 
 <template>
   <!-- Salary content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Income Management</h1>
+        <h1 class="text-3xl font-bold text-white tracking-wide">Income Management</h1>
         <p class="mt-2 text-lg text-white/70">
           Track your income sources and categories
         </p>
@@ -31,10 +31,17 @@ const calculateTotal = () => {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Income Input Form with glassmorphism -->
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 hover:shadow-green-500/30 transition-all duration-500 hover:scale-[1.02] group">
-        <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
-        <div class="relative z-10">
+    <!-- Income Input Form with glassmorphism -->
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
+      <div class="relative z-10">
           <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-green-200 transition-colors duration-300">Income Sources</h3>
           
           <div class="space-y-6">
@@ -77,10 +84,17 @@ const calculateTotal = () => {
         </div>
       </div>
 
-      <!-- Income Breakdown with glassmorphism -->
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 hover:shadow-blue-500/30 transition-all duration-500 hover:scale-[1.02] group">
-        <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
-        <div class="relative z-10">
+    <!-- Income Breakdown with glassmorphism -->
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
+      <div class="relative z-10">
           <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-blue-200 transition-colors duration-300">Income Breakdown</h3>
           
           <div class="space-y-4">

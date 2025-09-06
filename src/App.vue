@@ -55,7 +55,7 @@ onMounted(() => {
         <main class="py-8">
           <div class="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
             <!-- Page content -->
-            <router-view />
+            <router-view :key="$route.fullPath" />
           </div>
         </main>
       </div>

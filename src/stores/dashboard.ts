@@ -44,7 +44,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
   // Fetch dashboard overview
   const fetchOverview = async () => {
     try {
-      setLoading(true)
       setError(null)
 
       const response = await apiService.getDashboardOverview()
@@ -60,15 +59,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const errorMessage = err.response?.data?.message || 'Failed to fetch dashboard overview'
       setError(errorMessage)
       return { success: false, error: errorMessage }
-    } finally {
-      setLoading(false)
     }
   }
 
   // Fetch KPIs
   const fetchKPIs = async () => {
     try {
-      setLoading(true)
       setError(null)
 
       const response = await apiService.getKPIs()
@@ -84,15 +80,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const errorMessage = err.response?.data?.message || 'Failed to fetch KPIs'
       setError(errorMessage)
       return { success: false, error: errorMessage }
-    } finally {
-      setLoading(false)
     }
   }
 
   // Fetch recent transactions
   const fetchRecentTransactions = async (limit: number = 5) => {
     try {
-      setLoading(true)
       setError(null)
 
       const response = await apiService.getRecentTransactions(limit)
@@ -108,15 +101,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const errorMessage = err.response?.data?.message || 'Failed to fetch recent transactions'
       setError(errorMessage)
       return { success: false, error: errorMessage }
-    } finally {
-      setLoading(false)
     }
   }
 
   // Fetch savings goals
   const fetchSavingsGoals = async () => {
     try {
-      setLoading(true)
       setError(null)
 
       const response = await apiService.getSavingsGoals()
@@ -132,15 +122,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const errorMessage = err.response?.data?.message || 'Failed to fetch savings goals'
       setError(errorMessage)
       return { success: false, error: errorMessage }
-    } finally {
-      setLoading(false)
     }
   }
 
   // Fetch freelance summary
   const fetchFreelanceSummary = async () => {
     try {
-      setLoading(true)
       setError(null)
 
       const response = await apiService.getFreelanceSummary()
@@ -156,15 +143,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const errorMessage = err.response?.data?.message || 'Failed to fetch freelance summary'
       setError(errorMessage)
       return { success: false, error: errorMessage }
-    } finally {
-      setLoading(false)
     }
   }
 
   // Fetch upcoming recurring transactions
   const fetchUpcomingRecurring = async () => {
     try {
-      setLoading(true)
       setError(null)
 
       const response = await apiService.getUpcomingRecurring()
@@ -180,15 +164,16 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const errorMessage = err.response?.data?.message || 'Failed to fetch upcoming recurring transactions'
       setError(errorMessage)
       return { success: false, error: errorMessage }
-    } finally {
-      setLoading(false)
     }
   }
 
   // Fetch all dashboard data
-  const fetchAllDashboardData = async () => {
+  const fetchAllDashboardData = async (forceRefresh: boolean = false) => {
     try {
-      setLoading(true)
+      // Only show loading if we don't have any data or if force refresh is requested
+      if (!overview.value || forceRefresh) {
+        setLoading(true)
+      }
       setError(null)
 
       const [
@@ -223,6 +208,18 @@ export const useDashboardStore = defineStore('dashboard', () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Check if data is fresh (less than 5 minutes old)
+  const isDataFresh = () => {
+    // For now, we'll consider data fresh if we have overview data
+    // In a more sophisticated implementation, you could add timestamps
+    return !!overview.value
+  }
+
+  // Force refresh all data
+  const refreshData = async () => {
+    return await fetchAllDashboardData(true)
   }
 
   // Clear all data
@@ -271,6 +268,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
     fetchFreelanceSummary,
     fetchUpcomingRecurring,
     fetchAllDashboardData,
+    isDataFresh,
+    refreshData,
     clearData
   }
 })

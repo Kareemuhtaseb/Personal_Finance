@@ -12,10 +12,10 @@ const showAddGoal = ref(false)
 
 <template>
   <!-- Savings content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Savings Goals</h1>
+        <h1 class="text-premium-large">Savings Goals</h1>
         <p class="mt-2 text-lg text-white/70">
           Track your savings progress and financial goals
         </p>
@@ -24,7 +24,7 @@ const showAddGoal = ref(false)
       <div class="mt-4 sm:mt-0">
         <button
           @click="showAddGoal = true"
-          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-success inline-flex items-center"
         >
           + Add Goal
         </button>
@@ -33,8 +33,15 @@ const showAddGoal = ref(false)
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Goals Overview with glassmorphism -->
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 hover:shadow-green-500/30 transition-all duration-500 hover:scale-[1.02] group">
-        <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 relative overflow-hidden">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+        
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
         <div class="relative z-10">
           <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-green-200 transition-colors duration-300">Your Goals</h3>
           
@@ -42,8 +49,15 @@ const showAddGoal = ref(false)
             <div
               v-for="goal in goals"
               :key="goal.name"
-              class="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item"
+              class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group animate-fade-in-scale cursor-pointer"
             >
+              <!-- Goal card background effects -->
+              <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
+              
+              <!-- Hover shimmer effect -->
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
+              </div>
               <div class="flex items-center justify-between mb-3">
                 <span class="text-lg font-semibold text-white group-hover/item:text-green-200 transition-colors duration-300">{{ goal.name }}</span>
                 <span class="text-base text-white/70 group-hover/item:text-white/90 transition-colors duration-300">
@@ -68,8 +82,15 @@ const showAddGoal = ref(false)
       </div>
 
       <!-- Savings Growth Chart with glassmorphism -->
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 hover:shadow-blue-500/30 transition-all duration-500 hover:scale-[1.02] group">
-        <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 relative overflow-hidden">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+        
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
         <div class="relative z-10">
           <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-blue-200 transition-colors duration-300">Savings Growth</h3>
           <div class="h-64 flex items-center justify-center text-white/70 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 group-hover:bg-white/10 transition-all duration-500">
@@ -83,8 +104,15 @@ const showAddGoal = ref(false)
     </div>
 
     <!-- Quick Transfer with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-8 hover:shadow-purple-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-purple-200 transition-colors duration-300">Quick Transfer</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

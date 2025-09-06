@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useAccountsStore } from '../stores/accounts'
+import { availableCurrencies } from '../utils/currency'
 
 const authStore = useAuthStore()
 const accountsStore = useAccountsStore()
@@ -51,21 +52,11 @@ const newAccount = ref({
   name: '',
   type: 'CHECKING' as 'CHECKING' | 'SAVINGS' | 'CREDIT' | 'INVESTMENT',
   balance: 0,
-  currency: 'USD'
+  currency: authStore.user?.currency || 'USD'
 })
 
 
-// Currency management
-const availableCurrencies = ref([
-  { code: 'USD', name: 'US Dollar', symbol: '$' },
-  { code: 'EUR', name: 'Euro', symbol: '€' },
-  { code: 'GBP', name: 'British Pound', symbol: '£' },
-  { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
-  { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
-  { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
-  { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
-  { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' }
-])
+// Currency management - using centralized currency list
 
 // Initialize form data
 onMounted(async () => {
@@ -99,6 +90,31 @@ const updateProfile = async () => {
       }, 3000)
     } else {
       updateError.value = result.error || 'Failed to update profile'
+    }
+  } catch (error) {
+    updateError.value = 'An unexpected error occurred'
+  } finally {
+    isUpdating.value = false
+  }
+}
+
+// Update currency specifically
+const updateCurrency = async () => {
+  try {
+    isUpdating.value = true
+    updateError.value = null
+    updateSuccess.value = null
+
+    const result = await authStore.updateProfile({ currency: formData.value.currency })
+    
+    if (result.success) {
+      updateSuccess.value = 'Currency updated successfully!'
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        updateSuccess.value = null
+      }, 3000)
+    } else {
+      updateError.value = result.error || 'Failed to update currency'
     }
   } catch (error) {
     updateError.value = 'An unexpected error occurred'
@@ -161,7 +177,7 @@ const addAccount = async () => {
         name: '',
         type: 'CHECKING',
         balance: 0,
-        currency: 'USD'
+        currency: authStore.user?.currency || 'USD'
       }
       setTimeout(() => {
         updateSuccess.value = null
@@ -243,10 +259,10 @@ const deleteAccount = async (account: any) => {
 
 <template>
   <!-- Settings content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Settings</h1>
+        <h1 class="text-premium-large">Settings</h1>
         <p class="mt-2 text-lg text-white/70">
           Manage your account and preferences
         </p>
@@ -254,8 +270,17 @@ const deleteAccount = async (account: any) => {
     </div>
 
     <!-- Settings Tabs with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20">
-      <div class="border-b border-white/20">
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
+      <div class="relative z-10">
+        <div class="border-b border-white/20">
         <nav class="flex space-x-8 px-8" aria-label="Tabs">
           <button
             v-for="tab in tabs"
@@ -271,11 +296,12 @@ const deleteAccount = async (account: any) => {
             {{ tab.name }}
           </button>
         </nav>
+        </div>
       </div>
 
       <div class="p-8">
         <!-- Profile Tab -->
-        <div v-if="activeTab === 'profile'" class="space-y-8">
+        <div v-if="activeTab === 'profile'" class="space-premium">
           <h3 class="text-2xl font-bold text-white tracking-wide">Profile Settings</h3>
           
           <!-- Success/Error Messages -->
@@ -337,11 +363,13 @@ const deleteAccount = async (account: any) => {
                 v-model="formData.currency"
                 class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300"
               >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="CAD">CAD (C$)</option>
-                <option value="AUD">AUD (A$)</option>
+                <option 
+                  v-for="currency in availableCurrencies" 
+                  :key="currency.code" 
+                  :value="currency.code"
+                >
+                  {{ currency.code }} ({{ currency.symbol }}) - {{ currency.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -411,7 +439,7 @@ const deleteAccount = async (account: any) => {
         </div>
 
         <!-- Accounts Tab -->
-        <div v-if="activeTab === 'accounts'" class="space-y-8">
+        <div v-if="activeTab === 'accounts'" class="space-premium">
           <div class="flex justify-between items-center">
             <h3 class="text-2xl font-bold text-white tracking-wide">Account Management</h3>
             <button 
@@ -484,8 +512,17 @@ const deleteAccount = async (account: any) => {
 
 
         <!-- Currencies Tab -->
-        <div v-if="activeTab === 'currencies'" class="space-y-8">
+        <div v-if="activeTab === 'currencies'" class="space-premium">
           <h3 class="text-2xl font-bold text-white tracking-wide">Currency Settings</h3>
+          
+          <!-- Success/Error Messages -->
+          <div v-if="updateSuccess" class="bg-green-500/20 border border-green-500/30 rounded-xl p-4">
+            <p class="text-green-300">{{ updateSuccess }}</p>
+          </div>
+          
+          <div v-if="updateError" class="bg-red-500/20 border border-red-500/30 rounded-xl p-4">
+            <p class="text-red-300">{{ updateError }}</p>
+          </div>
           
           <div class="space-y-6">
             <div class="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
@@ -514,7 +551,7 @@ const deleteAccount = async (account: any) => {
               
               <div class="mt-6">
                 <button 
-                  @click="updateProfile"
+                  @click="updateCurrency"
                   :disabled="isUpdating"
                   class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
                 >
@@ -541,12 +578,12 @@ const deleteAccount = async (account: any) => {
           </div>
         </div>
         
-        <div v-if="activeTab === 'rules'" class="space-y-8">
+        <div v-if="activeTab === 'rules'" class="space-premium">
           <h3 class="text-2xl font-bold text-white tracking-wide">Automation Rules</h3>
           <p class="text-white/70">Automation and categorization rules will be implemented here.</p>
         </div>
         
-        <div v-if="activeTab === 'backup'" class="space-y-8">
+        <div v-if="activeTab === 'backup'" class="space-premium">
           <h3 class="text-2xl font-bold text-white tracking-wide">Backup & Export</h3>
           <p class="text-white/70">Data backup and export features will be implemented here.</p>
         </div>
@@ -610,11 +647,13 @@ const deleteAccount = async (account: any) => {
               required
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
             >
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="CAD">CAD (C$)</option>
-              <option value="AUD">AUD (A$)</option>
+              <option 
+                v-for="currency in availableCurrencies" 
+                :key="currency.code" 
+                :value="currency.code"
+              >
+                {{ currency.code }} ({{ currency.symbol }}) - {{ currency.name }}
+              </option>
             </select>
           </div>
           
@@ -694,11 +733,13 @@ const deleteAccount = async (account: any) => {
               required
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
             >
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="CAD">CAD (C$)</option>
-              <option value="AUD">AUD (A$)</option>
+              <option 
+                v-for="currency in availableCurrencies" 
+                :key="currency.code" 
+                :value="currency.code"
+              >
+                {{ currency.code }} ({{ currency.symbol }}) - {{ currency.name }}
+              </option>
             </select>
           </div>
           

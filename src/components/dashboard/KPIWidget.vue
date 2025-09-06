@@ -89,9 +89,6 @@ const formatValue = (value: number) => {
       <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
     </div>
     
-    <!-- Floating particles effect -->
-    <div class="absolute top-4 right-4 w-2 h-2 bg-blue-400/30 rounded-full animate-pulse-glow"></div>
-    <div class="absolute bottom-6 left-6 w-1 h-1 bg-purple-400/40 rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
     
     <div class="relative z-10">
       <div class="flex items-center justify-between mb-4">

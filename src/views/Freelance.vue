@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { apiService, type FreelanceProject, type WorkSession, type FreelanceSummary, type Account, type Category } from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 
 // Reactive data
 const projects = ref<FreelanceProject[]>([])
@@ -419,7 +420,7 @@ onMounted(() => {
             <p class="text-premium-subtle text-xs">Active Projects</p>
             <p class="text-premium-small">{{ activeProjects.length }}</p>
           </div>
-          <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+          <div class="w-8 h-8 flex items-center justify-center">
             <svg class="icon-premium-sm text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
             </svg>
@@ -433,7 +434,7 @@ onMounted(() => {
             <p class="text-premium-subtle text-xs">Total Hours</p>
             <p class="text-premium-small">{{ formatDuration(totalHours) }}</p>
           </div>
-          <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <div class="w-8 h-8 flex items-center justify-center">
             <svg class="icon-premium-sm text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
@@ -447,7 +448,7 @@ onMounted(() => {
             <p class="text-premium-subtle text-xs">Unpaid Hours</p>
             <p class="text-premium-small">{{ formatDuration(unpaidHours) }}</p>
           </div>
-          <div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+          <div class="w-8 h-8 flex items-center justify-center">
             <svg class="icon-premium-sm text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
@@ -461,7 +462,7 @@ onMounted(() => {
             <p class="text-premium-subtle text-xs">Total Earnings</p>
             <p class="text-premium-small">{{ formatCurrency(totalEarnings) }}</p>
           </div>
-          <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <div class="w-8 h-8 flex items-center justify-center">
             <svg class="icon-premium-sm text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
@@ -512,24 +513,19 @@ onMounted(() => {
         <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
         <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
         
-        <!-- Floating accent dots -->
-        <div class="absolute top-4 right-4 w-2 h-2 bg-green-400/30 rounded-full animate-pulse-glow"></div>
-        <div class="absolute bottom-4 left-4 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
         
         <div class="relative z-10">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-white flex items-center">
-              <span class="w-3 h-3 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mr-3 opacity-80"></span>
+            <h3 class="text-2xl font-bold text-white">
               Active Projects
             </h3>
             <div class="flex items-center space-x-2">
-              <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               <span class="text-xs text-white/60 font-medium">{{ activeProjects.length }} Active</span>
             </div>
           </div>
           
           <div v-if="activeProjects.length === 0" class="text-center py-12">
-            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <svg class="w-8 h-8 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
@@ -611,10 +607,7 @@ onMounted(() => {
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Status:</span>
-                    <span class="flex items-center">
-                      <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                      <span class="font-semibold text-green-400">Active</span>
-                    </span>
+                    <span class="font-semibold text-green-400">Active</span>
                   </div>
                 </div>
               </div>
@@ -633,24 +626,19 @@ onMounted(() => {
         <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
         <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
         
-        <!-- Floating accent dots -->
-        <div class="absolute top-4 right-4 w-2 h-2 bg-blue-400/30 rounded-full animate-pulse-glow"></div>
-        <div class="absolute bottom-4 left-4 w-1 h-1 bg-purple-400/40 rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
         
         <div class="relative z-10">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-white flex items-center">
-              <span class="w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-3 opacity-80"></span>
+            <h3 class="text-2xl font-bold text-white">
               Finished Projects
             </h3>
             <div class="flex items-center space-x-2">
-              <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
               <span class="text-xs text-white/60 font-medium">{{ completedProjects.length }} Completed</span>
             </div>
           </div>
           
           <div v-if="completedProjects.length === 0" class="text-center py-12">
-            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <svg class="w-8 h-8 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -725,10 +713,7 @@ onMounted(() => {
                   </div>
                   <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
                     <span class="text-white/70">Status:</span>
-                    <span class="flex items-center">
-                      <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                      <span class="font-semibold text-blue-400">Completed</span>
-                    </span>
+                    <span class="font-semibold text-blue-400">Completed</span>
                   </div>
                 </div>
               </div>
@@ -1272,14 +1257,6 @@ onMounted(() => {
 }
 
 /* Animation keyframes */
-@keyframes pulse-glow {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-  50% { 
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
-  }
-}
 
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
@@ -1298,9 +1275,6 @@ onMounted(() => {
 }
 
 /* Animation classes */
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
-}
 
 .animate-shimmer {
   position: relative;

@@ -312,12 +312,12 @@ const hasActiveFilters = computed(() => {
 
 <template>
   <!-- Income content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <!-- Page header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Income</h1>
-        <p class="mt-2 text-lg text-white/70">
+        <h1 class="text-premium-large">Income</h1>
+        <p class="mt-2 text-lg text-premium-muted">
           Track and manage your income sources
         </p>
       </div>
@@ -325,14 +325,14 @@ const hasActiveFilters = computed(() => {
       <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
         <button
           @click="showAddModal = true"
-          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-success inline-flex items-center"
         >
           <PlusIcon class="h-5 w-5 mr-2" />
           Add Income
         </button>
         <button
           @click="showCategoriesModal = true"
-          class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-purple inline-flex items-center"
         >
           <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
@@ -343,8 +343,15 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Filters and search with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 hover:shadow-green-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div>
@@ -355,7 +362,7 @@ const hasActiveFilters = computed(() => {
               v-model="searchQuery"
               type="text"
               placeholder="Search income entries..."
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
+              class="input-premium-enhanced"
             />
           </div>
           
@@ -365,7 +372,7 @@ const hasActiveFilters = computed(() => {
             </label>
             <select
               v-model="selectedCategory"
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
+              class="select-premium-enhanced"
             >
               <option value="all">All Categories</option>
               <option 
@@ -384,7 +391,7 @@ const hasActiveFilters = computed(() => {
             </label>
             <select
               v-model="selectedAccount"
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
+              class="select-premium-enhanced"
             >
               <option value="all">All Accounts</option>
               <option 
@@ -413,8 +420,15 @@ const hasActiveFilters = computed(() => {
 
 
     <!-- Income entries list with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-8 hover:shadow-green-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-2xl font-bold text-white tracking-wide group-hover:text-green-200 transition-colors duration-300">Recent Income</h3>
@@ -454,8 +468,15 @@ const hasActiveFilters = computed(() => {
           <div
             v-for="entry in filteredIncomeEntries"
             :key="entry.id"
-            class="flex items-center justify-between p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item"
+            class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group animate-fade-in-scale cursor-pointer flex items-center justify-between"
           >
+            <!-- Entry card background effects -->
+            <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
+            
+            <!-- Hover shimmer effect -->
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
+            </div>
             <div class="flex items-center space-x-4">
               <div class="p-3 bg-white/10 rounded-xl border border-white/20">
                 <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
@@ -496,10 +517,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Add Income Modal -->
-    <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+    <div v-if="showAddModal" class="modal-backdrop">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Add Income</h3>
+          <h3 class="text-premium-medium">Add Income</h3>
           <button 
             @click="showAddModal = false"
             class="text-white/60 hover:text-white text-2xl"
@@ -515,7 +536,7 @@ const hasActiveFilters = computed(() => {
               v-model="newIncome.description"
               type="text" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter description"
             />
           </div>
@@ -527,7 +548,7 @@ const hasActiveFilters = computed(() => {
               type="number" 
               step="0.01"
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter amount"
             />
           </div>
@@ -538,7 +559,7 @@ const hasActiveFilters = computed(() => {
               v-model="newIncome.date"
               type="date" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+              class="input-premium"
             />
           </div>
           
@@ -547,7 +568,7 @@ const hasActiveFilters = computed(() => {
             <select 
               v-model="newIncome.categoryId"
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+              class="input-premium"
             >
               <option value="">Select Category</option>
               <option 
@@ -565,7 +586,7 @@ const hasActiveFilters = computed(() => {
             <select 
               v-model="newIncome.accountId"
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+              class="input-premium"
             >
               <option value="">Select Account</option>
               <option 
@@ -598,10 +619,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+    <div v-if="showDeleteModal" class="modal-backdrop">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Delete Income Entry</h3>
+          <h3 class="text-premium-medium">Delete Income Entry</h3>
           <button 
             @click="cancelDelete"
             class="text-white/60 hover:text-white text-2xl"
@@ -649,9 +670,9 @@ const hasActiveFilters = computed(() => {
 
     <!-- Add Category Modal -->
     <div v-if="showAddCategoryModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Add Income Category</h3>
+          <h3 class="text-premium-medium">Add Income Category</h3>
           <button 
             @click="showAddCategoryModal = false"
             class="text-white/60 hover:text-white text-2xl"
@@ -667,7 +688,7 @@ const hasActiveFilters = computed(() => {
               v-model="newCategory.name"
               type="text" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter category name"
             />
           </div>
@@ -702,9 +723,9 @@ const hasActiveFilters = computed(() => {
 
     <!-- Edit Category Modal -->
     <div v-if="showEditCategoryModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Edit Income Category</h3>
+          <h3 class="text-premium-medium">Edit Income Category</h3>
           <button 
             @click="showEditCategoryModal = false; editingCategory = null"
             class="text-white/60 hover:text-white text-2xl"
@@ -720,7 +741,7 @@ const hasActiveFilters = computed(() => {
               v-model="newCategory.name"
               type="text" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter category name"
             />
           </div>
@@ -754,10 +775,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Categories Management Modal -->
-    <div v-if="showCategoriesModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div v-if="showCategoriesModal" class="modal-backdrop">
       <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Manage Income Categories</h3>
+          <h3 class="text-premium-medium">Manage Income Categories</h3>
           <button 
             @click="showCategoriesModal = false"
             class="text-white/60 hover:text-white text-2xl"

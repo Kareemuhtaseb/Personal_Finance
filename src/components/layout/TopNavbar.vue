@@ -130,7 +130,6 @@ const goToSettings = () => {
               <!-- Button background animation -->
               <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
               <BellIcon class="h-5 w-5 relative z-10" />
-              <span v-if="notifications.length > 0" class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full shadow-lg animate-pulse z-20"></span>
             </button>
 
             <!-- Notifications dropdown -->

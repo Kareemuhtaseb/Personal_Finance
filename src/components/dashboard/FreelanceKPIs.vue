@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { BriefcaseIcon, ClockIcon, DocumentTextIcon, BanknotesIcon } from '@heroicons/vue/24/outline'
+import { formatCurrency } from '../../utils/currency'
+import { useAuthStore } from '../../stores/auth'
 
 interface FreelanceData {
   activeProjects: number
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const authStore = useAuthStore()
 
 // Provide default values when data is null
 const freelanceData = computed(() => props.data || {
@@ -23,14 +26,8 @@ const freelanceData = computed(() => props.data || {
   totalUnpaid: 0
 })
 
-const formatCurrency = (amount: number) => {
-  return amount.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  })
-}
+// Get user's currency for formatting
+const userCurrency = computed(() => authStore.user?.currency || 'USD')
 
 const kpis = [
   {
@@ -98,8 +95,8 @@ const kpis = [
             </p>
             
             <p :class="['text-xl font-bold', kpi.textColor]">
-              <span v-if="kpi.name === 'Total Unpaid'">{{ formatCurrency(freelanceData.totalUnpaid) }}</span>
-              <span v-else>{{ freelanceData[kpi.key as keyof FreelanceData] }}</span>
+              <span v-if="kpi.name === 'Total Unpaid'">{{ formatCurrency(freelanceData.totalUnpaid, userCurrency) }}</span>
+              <span v-else>{{ freelanceData[kpi.key as keyof FreelanceData] || 0 }}</span>
             </p>
           </div>
         </div>

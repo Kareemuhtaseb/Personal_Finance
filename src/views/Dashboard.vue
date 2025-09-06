@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { 
   ArrowTrendingUpIcon, 
   ArrowTrendingDownIcon, 
@@ -23,6 +24,7 @@ import { useAuthStore } from '../stores/auth'
 // Stores
 const dashboardStore = useDashboardStore()
 const authStore = useAuthStore()
+const route = useRoute()
 
 // Computed properties for real data
 const monthlyData = computed(() => ({
@@ -55,13 +57,25 @@ const error = computed(() => dashboardStore.error)
 onMounted(async () => {
   await dashboardStore.fetchAllDashboardData()
 })
+
+// Watch for route changes to refresh data when returning to dashboard
+// Only refresh if data is stale or if there's no data
+watch(() => route.path, async (newPath, oldPath) => {
+  if (newPath === '/' && oldPath && oldPath !== '/') {
+    // User navigated back to dashboard from another page
+    // Only refresh if we don't have fresh data
+    if (!dashboardStore.isDataFresh()) {
+      await dashboardStore.fetchAllDashboardData()
+    }
+  }
+}, { immediate: false })
 </script>
 
 <template>
   <!-- Enhanced Dashboard with modern layout -->
   <div class="space-premium animate-fade-in">
     <!-- Error State -->
-    <div v-if="error" class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6">
+    <div v-if="error" class="backdrop-blur-xl bg-red-500/20 border border-red-500/30 rounded-2xl p-4 mb-6">
       <div class="flex items-center space-x-3">
         <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center">
           <span class="text-red-400 text-sm">⚠️</span>
@@ -84,6 +98,17 @@ onMounted(async () => {
           </p>
         </div>
         <div class="hidden md:flex items-center space-x-4 animate-slide-in-right">
+          <button 
+            @click="dashboardStore.refreshData()"
+            :disabled="isLoading"
+            class="btn-premium-success text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            title="Refresh dashboard data"
+          >
+            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
           <div class="text-right">
             <p class="text-sm text-white/60">Last updated</p>
             <p class="text-sm font-medium text-white">{{ new Date().toLocaleTimeString() }}</p>
@@ -97,81 +122,145 @@ onMounted(async () => {
 
     <!-- Loading State -->
     <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div v-for="i in 4" :key="i" class="card-premium rounded-2xl p-6 animate-pulse">
-        <div class="h-4 bg-white/20 rounded mb-4"></div>
-        <div class="h-8 bg-white/20 rounded mb-2"></div>
-        <div class="h-3 bg-white/10 rounded w-2/3"></div>
+      <div v-for="i in 4" :key="i" class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-6 relative overflow-hidden animate-pulse">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+        
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
+        <div class="relative z-10">
+          <div class="h-4 bg-white/20 rounded mb-4"></div>
+          <div class="h-8 bg-white/20 rounded mb-2"></div>
+          <div class="h-3 bg-white/10 rounded w-2/3"></div>
+        </div>
       </div>
     </div>
 
     <!-- KPI Cards Grid -->
     <div v-else class="grid-premium-4 mb-8">
-      <div class="animate-fade-in-scale" style="animation-delay: 0.1s;">
-        <KPIWidget
-          title="Total Income"
-          :value="monthlyData.income"
-          icon="banknotes"
-          color="green"
-          :change="12.5"
-          change-type="increase"
-        />
+      <div class="kpi-card rounded-xl shadow-green-500/20 p-4 animate-fade-in-scale" style="animation-delay: 0.1s;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-premium-subtle text-xs">Total Income</p>
+            <p class="text-premium-small">{{ monthlyData.income }}</p>
+          </div>
+          <div class="w-8 h-8 flex items-center justify-center">
+            <svg class="icon-premium-sm text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+            </svg>
+          </div>
+        </div>
       </div>
-      <div class="animate-fade-in-scale" style="animation-delay: 0.2s;">
-        <KPIWidget
-          title="Total Expenses"
-          :value="monthlyData.expenses"
-          icon="credit-card"
-          color="red"
-          :change="8.2"
-          change-type="increase"
-        />
+
+      <div class="kpi-card rounded-xl shadow-red-500/20 p-4 animate-fade-in-scale" style="animation-delay: 0.2s;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-premium-subtle text-xs">Total Expenses</p>
+            <p class="text-premium-small">{{ monthlyData.expenses }}</p>
+          </div>
+          <div class="w-8 h-8 flex items-center justify-center">
+            <svg class="icon-premium-sm text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+            </svg>
+          </div>
+        </div>
       </div>
-      <div class="animate-fade-in-scale" style="animation-delay: 0.3s;">
-        <KPIWidget
-          title="Net Savings"
-          :value="monthlyData.net"
-          icon="arrow-trending-up"
-          color="blue"
-          :change="15.3"
-          change-type="increase"
-        />
+
+      <div class="kpi-card rounded-xl shadow-blue-500/20 p-4 animate-fade-in-scale" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-premium-subtle text-xs">Net Savings</p>
+            <p class="text-premium-small">{{ monthlyData.net }}</p>
+          </div>
+          <div class="w-8 h-8 flex items-center justify-center">
+            <svg class="icon-premium-sm text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>
+          </div>
+        </div>
       </div>
-      <div class="animate-fade-in-scale" style="animation-delay: 0.4s;">
-        <KPIWidget
-          title="Freelance Income"
-          :value="monthlyData.freelance"
-          icon="briefcase"
-          color="purple"
-          :change="22.1"
-          change-type="increase"
-        />
+
+      <div class="kpi-card rounded-xl shadow-purple-500/20 p-4 animate-fade-in-scale" style="animation-delay: 0.4s;">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-premium-subtle text-xs">Freelance Income</p>
+            <p class="text-premium-small">{{ monthlyData.freelance }}</p>
+          </div>
+          <div class="w-8 h-8 flex items-center justify-center">
+            <svg class="icon-premium-sm text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Charts and Analytics Section -->
-    <div class="grid-premium-2 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
       <!-- Cashflow Chart -->
-      <div class="animate-slide-in-up" style="animation-delay: 0.5s;">
-        <ChartCard title="Cashflow Trend" class="h-96">
-          <CashflowChart :data="cashflowData" :loading="isLoading" />
-        </ChartCard>
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-6 relative overflow-hidden animate-slide-in-up" style="animation-delay: 0.5s;">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+        
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-white">Cashflow Trend</h3>
+          </div>
+          <div class="h-96">
+            <CashflowChart :data="cashflowData" :loading="isLoading" />
+          </div>
+        </div>
       </div>
       
       <!-- Category Breakdown -->
-      <div class="animate-slide-in-up" style="animation-delay: 0.6s;">
-        <ChartCard title="Expense Categories" class="h-96">
-          <CategoryChart :data="categoryBreakdown" :loading="isLoading" />
-        </ChartCard>
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-green-500/20 p-6 relative overflow-hidden animate-slide-in-up" style="animation-delay: 0.6s;">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+        
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-white">Expense Categories</h3>
+          </div>
+          <div class="h-96">
+            <CategoryChart :data="categoryBreakdown" :loading="isLoading" />
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Bottom Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Recent Transactions -->
-      <div class="lg:col-span-2 animate-slide-in-up" style="animation-delay: 0.7s;">
-        <ChartCard title="Recent Transactions" class="h-96">
-          <RecentTransactions :transactions="recentTransactions" />
-        </ChartCard>
+      <div class="lg:col-span-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-6 relative overflow-hidden animate-slide-in-up" style="animation-delay: 0.7s;">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+        
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-white">Recent Transactions</h3>
+          </div>
+          <div class="h-96">
+            <RecentTransactions :transactions="recentTransactions" />
+          </div>
+        </div>
       </div>
       
       <!-- Quick Actions & Savings Goals -->
@@ -182,8 +271,18 @@ onMounted(async () => {
     </div>
 
     <!-- Freelance KPIs Section -->
-    <div class="animate-slide-in-up" style="animation-delay: 0.9s;">
-      <FreelanceKPIs :data="freelanceData" />
+    <div v-if="freelanceData" class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-orange-500/20 p-6 relative overflow-hidden animate-slide-in-up" style="animation-delay: 0.9s;">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-red-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
+      <div class="relative z-10">
+        <FreelanceKPIs :key="`freelance-kpis-${freelanceData?.activeProjects || 0}`" :data="freelanceData" />
+      </div>
     </div>
   </div>
 </template>
@@ -240,14 +339,6 @@ onMounted(async () => {
   66% { transform: translateY(-12px) rotate(-0.5deg); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-  50% { 
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
-  }
-}
 
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
@@ -275,9 +366,6 @@ onMounted(async () => {
   animation: float 8s ease-in-out infinite;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
-}
 
 .animate-shimmer {
   position: relative;

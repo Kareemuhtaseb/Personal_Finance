@@ -300,12 +300,12 @@ const hasActiveFilters = computed(() => {
 
 <template>
   <!-- Transactions content without duplicate background -->
-  <div class="space-y-8">
+  <div class="space-premium">
     <!-- Page header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-white tracking-wide">Expenses</h1>
-        <p class="mt-2 text-lg text-white/70">
+        <h1 class="text-premium-large">Expenses</h1>
+        <p class="mt-2 text-lg text-premium-muted">
           Track and manage your expenses
         </p>
       </div>
@@ -313,14 +313,14 @@ const hasActiveFilters = computed(() => {
       <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
         <button
           @click="showAddModal = true"
-          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-success inline-flex items-center"
         >
           <PlusIcon class="h-5 w-5 mr-2" />
           Add Expense
         </button>
         <button
           @click="showCategoriesModal = true"
-          class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          class="btn-purple inline-flex items-center"
         >
           <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
@@ -331,8 +331,15 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Filters and search with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-orange-500/20 p-8 hover:shadow-orange-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-orange-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-red-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div>
@@ -343,7 +350,7 @@ const hasActiveFilters = computed(() => {
               v-model="searchQuery"
               type="text"
               placeholder="Search transactions..."
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300"
+              class="input-premium-enhanced"
             />
           </div>
           
@@ -353,7 +360,7 @@ const hasActiveFilters = computed(() => {
             </label>
             <select
               v-model="selectedCategory"
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300"
+              class="select-premium-enhanced"
             >
               <option value="all">All Categories</option>
               <option 
@@ -372,7 +379,7 @@ const hasActiveFilters = computed(() => {
             </label>
             <select
               v-model="selectedAccount"
-              class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300"
+              class="select-premium-enhanced"
             >
               <option value="all">All Accounts</option>
               <option 
@@ -389,7 +396,7 @@ const hasActiveFilters = computed(() => {
             <button 
               type="button"
               @click="clearFilters"
-              class="w-full px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              class="btn-premium w-full inline-flex items-center justify-center"
             >
               <FunnelIcon class="h-5 w-5 mr-2" />
               Clear Filters
@@ -401,11 +408,18 @@ const hasActiveFilters = computed(() => {
 
 
     <!-- Transactions list with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 hover:shadow-blue-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-blue-500/20 p-8 relative overflow-hidden">
+      <!-- Enhanced background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+      <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
+      
+      <!-- Animated border gradient -->
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-50"></div>
+      <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+      
       <div class="relative z-10">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-2xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors duration-300">Recent Expenses</h3>
+          <h3 class="text-premium-medium group-hover:text-blue-200 transition-colors duration-300">Recent Expenses</h3>
           <div v-if="hasActiveFilters" class="flex items-center space-x-2">
             <span class="text-sm text-white/60">Filters active</span>
             <div class="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
@@ -440,11 +454,19 @@ const hasActiveFilters = computed(() => {
         <!-- Expenses List -->
         <div v-else class="space-y-4">
           <div
-            v-for="transaction in filteredTransactions"
+            v-for="(transaction, index) in filteredTransactions"
             :key="transaction.id"
-            class="flex items-center justify-between p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item"
+            class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group animate-fade-in-scale cursor-pointer flex items-center justify-between"
+            :style="{ animationDelay: `${index * 0.1}s` }"
           >
-            <div class="flex items-center space-x-4">
+            <!-- Transaction card background effects -->
+            <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
+            
+            <!-- Hover shimmer effect -->
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
+            </div>
+            <div class="relative z-10 flex items-center space-x-4">
               <div class="p-3 bg-white/10 rounded-xl border border-white/20">
                 <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                   <span class="text-white text-sm font-bold">{{ transaction.category.charAt(0) }}</span>
@@ -461,7 +483,7 @@ const hasActiveFilters = computed(() => {
               </div>
             </div>
             
-            <div class="flex items-center space-x-4">
+            <div class="relative z-10 flex items-center space-x-4">
               <div class="text-right">
                 <p :class="['text-2xl font-bold', getAmountColor(transaction.amount)]">
                   {{ formatAmount(transaction.amount) }}
@@ -484,10 +506,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Add Transaction Modal -->
-    <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+    <div v-if="showAddModal" class="modal-backdrop">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Add Expense</h3>
+          <h3 class="text-premium-medium">Add Expense</h3>
           <button 
             @click="showAddModal = false"
             class="text-white/60 hover:text-white text-2xl"
@@ -503,7 +525,7 @@ const hasActiveFilters = computed(() => {
               v-model="newExpense.description"
               type="text" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter description"
             />
           </div>
@@ -515,7 +537,7 @@ const hasActiveFilters = computed(() => {
               type="number" 
               step="0.01"
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter amount"
             />
           </div>
@@ -527,7 +549,7 @@ const hasActiveFilters = computed(() => {
               v-model="newExpense.date"
               type="date" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+              class="input-premium"
             />
           </div>
           
@@ -536,7 +558,7 @@ const hasActiveFilters = computed(() => {
             <select 
               v-model="newExpense.categoryId"
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+              class="select-premium"
             >
               <option value="">Select Category</option>
               <option 
@@ -554,7 +576,7 @@ const hasActiveFilters = computed(() => {
             <select 
               v-model="newExpense.accountId"
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
+              class="select-premium"
             >
               <option value="">Select Account</option>
               <option 
@@ -570,14 +592,14 @@ const hasActiveFilters = computed(() => {
           <div class="flex space-x-4 pt-4">
             <button 
               type="submit"
-              class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-primary flex-1"
             >
               Add Expense
             </button>
             <button 
               type="button"
               @click="showAddModal = false"
-              class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-premium flex-1"
             >
               Cancel
             </button>
@@ -587,10 +609,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+    <div v-if="showDeleteModal" class="modal-backdrop">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Delete Expense</h3>
+          <h3 class="text-premium-medium">Delete Expense</h3>
           <button 
             @click="cancelDelete"
             class="text-white/60 hover:text-white text-2xl"
@@ -621,13 +643,13 @@ const hasActiveFilters = computed(() => {
           <div class="flex space-x-4 pt-4">
             <button 
               @click="deleteTransaction"
-              class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-danger flex-1"
             >
               Delete Expense
             </button>
             <button 
               @click="cancelDelete"
-              class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-premium flex-1"
             >
               Cancel
             </button>
@@ -637,10 +659,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Add Category Modal -->
-    <div v-if="showAddCategoryModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+    <div v-if="showAddCategoryModal" class="modal-backdrop" style="z-index: 60;">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Add Expense Category</h3>
+          <h3 class="text-premium-medium">Add Expense Category</h3>
           <button 
             @click="showAddCategoryModal = false"
             class="text-white/60 hover:text-white text-2xl"
@@ -656,7 +678,7 @@ const hasActiveFilters = computed(() => {
               v-model="newCategory.name"
               type="text" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter category name"
             />
           </div>
@@ -673,14 +695,14 @@ const hasActiveFilters = computed(() => {
           <div class="flex space-x-4 pt-4">
             <button 
               type="submit"
-              class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-warning flex-1"
             >
               Add Category
             </button>
             <button 
               type="button"
               @click="showAddCategoryModal = false"
-              class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-premium flex-1"
             >
               Cancel
             </button>
@@ -690,10 +712,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Edit Category Modal -->
-    <div v-if="showEditCategoryModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-md w-full mx-4">
+    <div v-if="showEditCategoryModal" class="modal-backdrop" style="z-index: 60;">
+      <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Edit Expense Category</h3>
+          <h3 class="text-premium-medium">Edit Expense Category</h3>
           <button 
             @click="showEditCategoryModal = false; editingCategory = null"
             class="text-white/60 hover:text-white text-2xl"
@@ -709,7 +731,7 @@ const hasActiveFilters = computed(() => {
               v-model="newCategory.name"
               type="text" 
               required
-              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+              class="input-premium"
               placeholder="Enter category name"
             />
           </div>
@@ -726,14 +748,14 @@ const hasActiveFilters = computed(() => {
           <div class="flex space-x-4 pt-4">
             <button 
               type="submit"
-              class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-warning flex-1"
             >
               Update Category
             </button>
             <button 
               type="button"
               @click="showEditCategoryModal = false; editingCategory = null"
-              class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-semibold transition-colors"
+              class="btn-premium flex-1"
             >
               Cancel
             </button>
@@ -743,10 +765,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Categories Management Modal -->
-    <div v-if="showCategoriesModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div v-if="showCategoriesModal" class="modal-backdrop">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-white">Manage Expense Categories</h3>
+          <h3 class="text-premium-medium">Manage Expense Categories</h3>
           <button 
             @click="showCategoriesModal = false"
             class="text-white/60 hover:text-white text-2xl"
@@ -760,7 +782,7 @@ const hasActiveFilters = computed(() => {
           <div class="flex justify-end">
             <button
               @click="showAddCategoryModal = true"
-              class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              class="btn-warning inline-flex items-center"
             >
               <PlusIcon class="h-4 w-4 mr-2" />
               Add Category
@@ -770,11 +792,19 @@ const hasActiveFilters = computed(() => {
           <!-- Categories Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             <div
-              v-for="category in categoriesStore.getExpenseCategories()"
+              v-for="(category, index) in categoriesStore.getExpenseCategories()"
               :key="category.id"
-              class="p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item"
+              class="p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item relative overflow-hidden animate-fade-in-scale"
+              :style="{ animationDelay: `${index * 0.1}s` }"
             >
-              <div class="flex items-center justify-between">
+              <!-- Category card background effects -->
+              <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
+              
+              <!-- Hover shimmer effect -->
+              <div class="absolute inset-0 opacity-0 group-hover/item:opacity-100 transition-opacity duration-500">
+                <div class="animate-shimmer absolute inset-0 rounded-2xl"></div>
+              </div>
+              <div class="relative z-10 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                   <div class="w-8 h-8 rounded-full" :style="{ backgroundColor: category.color }"></div>
                   <div>
