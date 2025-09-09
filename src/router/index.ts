@@ -53,6 +53,12 @@ const router = createRouter({
       meta: { title: 'Settings', requiresAuth: true }
     },
     {
+      path: '/operations',
+      name: 'operations',
+      component: () => import('../views/Operations.vue'),
+      meta: { title: 'Operations', requiresAuth: true }
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       redirect: '/'

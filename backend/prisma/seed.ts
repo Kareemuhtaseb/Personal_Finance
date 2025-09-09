@@ -254,8 +254,10 @@ async function main() {
   console.log('✅ Freelance projects created');
 
   // Create invoices
-  await prisma.invoice.create({
-    data: {
+  await prisma.invoice.upsert({
+    where: { invoiceNumber: 'INV-001' },
+    update: {},
+    create: {
       userId: user.id,
       projectId: websiteProject.id,
       amount: 187500, // $1875
@@ -265,8 +267,10 @@ async function main() {
     },
   });
 
-  await prisma.invoice.create({
-    data: {
+  await prisma.invoice.upsert({
+    where: { invoiceNumber: 'INV-002' },
+    update: {},
+    create: {
       userId: user.id,
       projectId: mobileAppProject.id,
       amount: 320000, // $3200
@@ -279,8 +283,10 @@ async function main() {
   console.log('✅ Invoices created');
 
   // Create salary configuration
-  const salary = await prisma.salary.create({
-    data: {
+  const salary = await prisma.salary.upsert({
+    where: { userId: user.id },
+    update: {},
+    create: {
       userId: user.id,
       gross: 7500000, // $75000
       net: 4276200, // $42762
@@ -309,32 +315,243 @@ async function main() {
 
   console.log('✅ Salary configuration created');
 
-  // Create recurring transactions
-  await prisma.recurringTransaction.create({
-    data: {
-      userId: user.id,
-      accountId: checkingAccount.id,
-      categoryId: housingCategory.id,
-      description: 'Rent Payment',
-      amount: -120000, // -$1200
-      frequency: 'MONTHLY',
-      nextDueDate: new Date('2024-02-01'),
-    },
-  });
+  // Create recurring transactions (skip if they already exist)
+  try {
+    await prisma.recurringTransaction.create({
+      data: {
+        userId: user.id,
+        accountId: checkingAccount.id,
+        categoryId: housingCategory.id,
+        description: 'Rent Payment',
+        amount: -120000, // -$1200
+        frequency: 'MONTHLY',
+        nextDueDate: new Date('2024-02-01'),
+      },
+    });
 
-  await prisma.recurringTransaction.create({
-    data: {
-      userId: user.id,
-      accountId: checkingAccount.id,
-      categoryId: incomeCategory.id,
-      description: 'Salary',
-      amount: 500000, // $5000
-      frequency: 'MONTHLY',
-      nextDueDate: new Date('2024-02-15'),
-    },
-  });
+    await prisma.recurringTransaction.create({
+      data: {
+        userId: user.id,
+        accountId: checkingAccount.id,
+        categoryId: incomeCategory.id,
+        description: 'Salary',
+        amount: 500000, // $5000
+        frequency: 'MONTHLY',
+        nextDueDate: new Date('2024-02-15'),
+      },
+    });
+  } catch (error) {
+    console.log('⚠️ Recurring transactions already exist, skipping...');
+  }
 
   console.log('✅ Recurring transactions created');
+
+  // Create sample operations data
+  // Create inventory items
+  const laptop = await prisma.item.create({
+    data: {
+      userId: user.id,
+      name: 'MacBook Pro',
+      description: '16-inch MacBook Pro for development',
+      quantity: 5,
+      unitCost: 250000, // $2500
+      minStock: 2,
+      maxStock: 10,
+    },
+  });
+
+  const monitor = await prisma.item.create({
+    data: {
+      userId: user.id,
+      name: '4K Monitor',
+      description: '27-inch 4K monitor',
+      quantity: 8,
+      unitCost: 40000, // $400
+      minStock: 3,
+      maxStock: 15,
+    },
+  });
+
+  const keyboard = await prisma.item.create({
+    data: {
+      userId: user.id,
+      name: 'Mechanical Keyboard',
+      description: 'Wireless mechanical keyboard',
+      quantity: 2,
+      unitCost: 15000, // $150
+      minStock: 5,
+      maxStock: 20,
+    },
+  });
+
+  console.log('✅ Inventory items created');
+
+  // Create orders
+  const order1 = await prisma.order.create({
+    data: {
+      userId: user.id,
+      orderNumber: 'ORD-001',
+      status: 'UNPAID',
+      amount: 500000, // $5000
+      type: 'DELIVERY',
+      dueDate: new Date('2024-02-15'),
+      priority: 'NORMAL',
+      description: 'Website development project',
+      clientName: 'ABC Company',
+      clientEmail: 'contact@abccompany.com',
+      estimatedHours: 40,
+    },
+  });
+
+  const order2 = await prisma.order.create({
+    data: {
+      userId: user.id,
+      orderNumber: 'ORD-002',
+      status: 'PAID',
+      amount: 250000, // $2500
+      type: 'PICKUP',
+      dueDate: new Date('2024-01-30'),
+      priority: 'URGENT',
+      description: 'Mobile app consultation',
+      clientName: 'XYZ Startup',
+      clientEmail: 'hello@xyzstartup.com',
+      estimatedHours: 20,
+    },
+  });
+
+  console.log('✅ Orders created');
+
+  // Create tasks
+  const task1 = await prisma.task.create({
+    data: {
+      userId: user.id,
+      title: 'Design homepage layout',
+      description: 'Create wireframes and mockups for the homepage',
+      status: 'PENDING',
+      priority: 'NORMAL',
+      dueDate: new Date('2024-02-10'),
+      assignedTo: 'John Doe',
+      orderId: order1.id,
+      estimatedHours: 8,
+      position: 0,
+    },
+  });
+
+  const task2 = await prisma.task.create({
+    data: {
+      userId: user.id,
+      title: 'Implement user authentication',
+      description: 'Set up login and registration system',
+      status: 'IN_PROGRESS',
+      priority: 'URGENT',
+      dueDate: new Date('2024-02-05'),
+      assignedTo: 'Jane Smith',
+      orderId: order1.id,
+      estimatedHours: 12,
+      actualHours: 6,
+      position: 0,
+    },
+  });
+
+  const task3 = await prisma.task.create({
+    data: {
+      userId: user.id,
+      title: 'Database optimization',
+      description: 'Optimize database queries and add indexes',
+      status: 'COMPLETED',
+      priority: 'LOW',
+      dueDate: new Date('2024-01-25'),
+      assignedTo: 'Mike Johnson',
+      orderId: order2.id,
+      estimatedHours: 6,
+      actualHours: 5,
+      position: 0,
+    },
+  });
+
+  const task4 = await prisma.task.create({
+    data: {
+      userId: user.id,
+      title: 'API documentation',
+      description: 'Write comprehensive API documentation',
+      status: 'PENDING',
+      priority: 'NORMAL',
+      dueDate: new Date('2024-02-20'),
+      assignedTo: 'Sarah Wilson',
+      estimatedHours: 4,
+      position: 1,
+    },
+  });
+
+  console.log('✅ Tasks created');
+
+  // Create workshops
+  const workshop1 = await prisma.workshop.create({
+    data: {
+      userId: user.id,
+      title: 'React Development Workshop',
+      client: 'Tech Academy',
+      organization: 'Tech Academy Inc',
+      date: new Date('2024-02-15'),
+      location: 'Conference Room A',
+      notes: 'Beginner to intermediate level workshop',
+      orderId: order1.id,
+    },
+  });
+
+  const workshop2 = await prisma.workshop.create({
+    data: {
+      userId: user.id,
+      title: 'Database Design Best Practices',
+      client: 'Data Corp',
+      organization: 'Data Corporation',
+      date: new Date('2024-02-28'),
+      location: 'Online',
+      notes: 'Advanced database design concepts',
+    },
+  });
+
+  console.log('✅ Workshops created');
+
+  // Create task costs
+  await prisma.taskCost.create({
+    data: {
+      taskId: task1.id,
+      description: 'Design software license',
+      amount: 5000, // $50
+    },
+  });
+
+  await prisma.taskCost.create({
+    data: {
+      taskId: task2.id,
+      description: 'Development tools',
+      amount: 10000, // $100
+      itemId: laptop.id,
+    },
+  });
+
+  console.log('✅ Task costs created');
+
+  // Create workshop costs
+  await prisma.workshopCost.create({
+    data: {
+      workshopId: workshop1.id,
+      description: 'Presentation materials',
+      amount: 2500, // $25
+    },
+  });
+
+  await prisma.workshopCost.create({
+    data: {
+      workshopId: workshop1.id,
+      description: 'Equipment rental',
+      amount: 15000, // $150
+      itemId: monitor.id,
+    },
+  });
+
+  console.log('✅ Workshop costs created');
 
   console.log('🎉 Database seed completed successfully!');
 }
