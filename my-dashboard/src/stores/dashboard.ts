@@ -1,0 +1,246 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import apiService, { 
+  type DashboardOverview, 
+  type KPIData, 
+  type Transaction, 
+  type FreelanceSummary,
+  type RecurringTransaction 
+} from '../services/api'
+
+export const useDashboardStore = defineStore('dashboard', () => {
+  // State
+  const overview = ref<DashboardOverview | null>(null)
+  const kpis = ref<KPIData[]>([])
+  const recentTransactions = ref<Transaction[]>([])
+  const freelanceSummary = ref<FreelanceSummary | null>(null)
+  const upcomingRecurring = ref<RecurringTransaction[]>([])
+  const categoryBreakdown = ref<any[]>([])
+  const cashflowData = ref<any>(null)
+  const budgetData = ref<any[]>([])
+  
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
+
+  // Getters
+  const totalBalance = computed(() => overview.value?.totalBalance || 0)
+  const monthlyIncome = computed(() => overview.value?.monthlyIncome || 0)
+  const monthlyExpenses = computed(() => overview.value?.monthlyExpenses || 0)
+  const netSavings = computed(() => overview.value?.netSavings || 0)
+  const freelanceIncome = computed(() => overview.value?.freelanceIncome || 0)
+
+  // Actions
+  const setError = (errorMessage: string | null) => {
+    error.value = errorMessage
+  }
+
+  const setLoading = (loading: boolean) => {
+    isLoading.value = loading
+  }
+
+  // Fetch dashboard overview
+  const fetchOverview = async () => {
+    try {
+      setError(null)
+
+      const response = await apiService.getDashboardOverview()
+      
+      if (response.data.success) {
+        overview.value = response.data.data!
+        return { success: true, data: response.data.data }
+      } else {
+        setError(response.data.message)
+        return { success: false, error: response.data.message }
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to fetch dashboard overview'
+      setError(errorMessage)
+      return { success: false, error: errorMessage }
+    }
+  }
+
+  // Fetch KPIs
+  const fetchKPIs = async () => {
+    try {
+      setError(null)
+
+      const response = await apiService.getKPIs()
+      
+      if (response.data.success) {
+        kpis.value = response.data.data!
+        return { success: true, data: response.data.data }
+      } else {
+        setError(response.data.message)
+        return { success: false, error: response.data.message }
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to fetch KPIs'
+      setError(errorMessage)
+      return { success: false, error: errorMessage }
+    }
+  }
+
+  // Fetch recent transactions
+  const fetchRecentTransactions = async (limit: number = 5) => {
+    try {
+      setError(null)
+
+      const response = await apiService.getRecentTransactions(limit)
+      
+      if (response.data.success) {
+        recentTransactions.value = response.data.data!
+        return { success: true, data: response.data.data }
+      } else {
+        setError(response.data.message)
+        return { success: false, error: response.data.message }
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to fetch recent transactions'
+      setError(errorMessage)
+      return { success: false, error: errorMessage }
+    }
+  }
+
+
+  // Fetch freelance summary
+  const fetchFreelanceSummary = async () => {
+    try {
+      setError(null)
+
+      const response = await apiService.getFreelanceSummary()
+      
+      if (response.data.success) {
+        freelanceSummary.value = response.data.data!
+        return { success: true, data: response.data.data }
+      } else {
+        setError(response.data.message)
+        return { success: false, error: response.data.message }
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to fetch freelance summary'
+      setError(errorMessage)
+      return { success: false, error: errorMessage }
+    }
+  }
+
+  // Fetch upcoming recurring transactions
+  const fetchUpcomingRecurring = async () => {
+    try {
+      setError(null)
+
+      const response = await apiService.getUpcomingRecurring()
+      
+      if (response.data.success) {
+        upcomingRecurring.value = response.data.data!
+        return { success: true, data: response.data.data }
+      } else {
+        setError(response.data.message)
+        return { success: false, error: response.data.message }
+      }
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to fetch upcoming recurring transactions'
+      setError(errorMessage)
+      return { success: false, error: errorMessage }
+    }
+  }
+
+  // Fetch all dashboard data
+  const fetchAllDashboardData = async (forceRefresh: boolean = false) => {
+    try {
+      // Only show loading if we don't have any data or if force refresh is requested
+      if (!overview.value || forceRefresh) {
+        setLoading(true)
+      }
+      setError(null)
+
+      const [
+        overviewResult,
+        kpisResult,
+        transactionsResult,
+        freelanceResult,
+        recurringResult
+      ] = await Promise.allSettled([
+        fetchOverview(),
+        fetchKPIs(),
+        fetchRecentTransactions(),
+        fetchFreelanceSummary(),
+        fetchUpcomingRecurring()
+      ])
+
+      // Check for any failures
+      const results = [overviewResult, kpisResult, transactionsResult, freelanceResult, recurringResult]
+      const failures = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.success))
+      
+      if (failures.length > 0) {
+        console.warn('Some dashboard data failed to load:', failures)
+      }
+
+      return { success: true }
+    } catch (err: any) {
+      const errorMessage = err.message || 'Failed to fetch dashboard data'
+      setError(errorMessage)
+      return { success: false, error: errorMessage }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Check if data is fresh (less than 5 minutes old)
+  const isDataFresh = () => {
+    // For now, we'll consider data fresh if we have overview data
+    // In a more sophisticated implementation, you could add timestamps
+    return !!overview.value
+  }
+
+  // Force refresh all data
+  const refreshData = async () => {
+    return await fetchAllDashboardData(true)
+  }
+
+  // Clear all data
+  const clearData = () => {
+    overview.value = null
+    kpis.value = []
+    recentTransactions.value = []
+    freelanceSummary.value = null
+    upcomingRecurring.value = []
+    categoryBreakdown.value = []
+    cashflowData.value = null
+    budgetData.value = []
+    error.value = null
+  }
+
+  return {
+    // State
+    overview,
+    kpis,
+    recentTransactions,
+    freelanceSummary,
+    upcomingRecurring,
+    categoryBreakdown,
+    cashflowData,
+    budgetData,
+    isLoading,
+    error,
+    
+    // Getters
+    totalBalance,
+    monthlyIncome,
+    monthlyExpenses,
+    netSavings,
+    freelanceIncome,
+    
+    // Actions
+    setError,
+    setLoading,
+    fetchOverview,
+    fetchKPIs,
+    fetchRecentTransactions,
+    fetchFreelanceSummary,
+    fetchUpcomingRecurring,
+    fetchAllDashboardData,
+    isDataFresh,
+    refreshData,
+    clearData
+  }
+})
