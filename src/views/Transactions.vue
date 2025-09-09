@@ -104,7 +104,7 @@ const addExpense = async () => {
       description: newExpense.value.description,
       amount: Math.abs(amount), // API expects positive amount
       date: newExpense.value.date || new Date().toISOString().split('T')[0],
-      type: 'EXPENSE' as 'EXPENSE'
+      type: 'EXPENSE' as const
     }
     
     const response = await apiService.createTransaction(expenseData)

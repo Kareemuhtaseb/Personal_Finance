@@ -135,7 +135,7 @@ const addIncome = async () => {
       description: newIncome.value.description,
       amount: Math.abs(amount), // API expects positive amount
       date: newIncome.value.date || new Date().toISOString().split('T')[0],
-      type: 'INCOME' as 'INCOME'
+      type: 'INCOME' as const
     }
     
     const response = await apiService.createTransaction(incomeData)
