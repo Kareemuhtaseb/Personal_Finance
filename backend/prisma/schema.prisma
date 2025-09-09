@@ -1,0 +1,310 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  timezone  String   @default("UTC")
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts            Account[]
+  transactions        Transaction[]
+  categories          Category[]
+  savingsGoals        SavingsGoal[]
+  freelanceProjects   FreelanceProject[]
+  workSessions        WorkSession[]
+  invoices            Invoice[]
+  partialPayments     PartialPayment[]
+  salary              Salary?
+  recurringTransactions RecurringTransaction[]
+
+  @@map("users")
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  type      AccountType
+  balance   Int      // Stored in cents
+  currency  String   @default("USD")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  recurringTransactions RecurringTransaction[]
+
+  @@map("accounts")
+}
+
+model Category {
+  id        String       @id @default(cuid())
+  userId    String
+  name      String
+  color     String
+  type      CategoryType
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  recurringTransactions RecurringTransaction[]
+
+  @@map("categories")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  accountId   String
+  categoryId  String
+  description String
+  amount      Int      // Stored in cents, positive for income, negative for expense
+  date        DateTime
+  type        TransactionType
+  cleared     Boolean  @default(false)
+  recurringId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+model SavingsGoal {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  target     Int       // Stored in cents
+  current    Int       @default(0) // Stored in cents
+  color      String
+  targetDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("savings_goals")
+}
+
+model FreelanceProject {
+  id          String      @id @default(cuid())
+  userId      String
+  name        String
+  client      String
+  status      ProjectStatus
+  hourlyRate  Int         // Stored in cents
+  paymentType PaymentType @default(HOURLY_RATE)
+  totalHours  Float       @default(0)
+  paidHours   Float       @default(0)
+  unpaidHours Float       @default(0)
+  totalAmount Int         @default(0) // Stored in cents
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
+  workSessions WorkSession[]
+
+  @@map("freelance_projects")
+}
+
+model WorkSession {
+  id          String   @id @default(cuid())
+  userId      String
+  projectId   String
+  startTime   DateTime
+  endTime     DateTime?
+  breakDuration Int    @default(0) // Break duration in minutes
+  isPaid      Boolean  @default(false)
+  description String?
+  customAmount Int?    // Custom payment amount in cents (for non-hourly projects)
+  partialPayments PartialPayment[] // Track partial payments for this session
+  invoiceWorkSessions InvoiceWorkSession[] // Invoices that include this work session
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project FreelanceProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("work_sessions")
+}
+
+model Invoice {
+  id            String      @id @default(cuid())
+  userId        String
+  projectId     String
+  amount        Int         // Stored in cents
+  status        InvoiceStatus
+  dueDate       DateTime
+  paidDate      DateTime?
+  invoiceNumber String      @unique
+  description   String?     // Invoice description/notes
+  invoiceWorkSessions InvoiceWorkSession[] // Work sessions included in this invoice
+  partialPayments PartialPayment[] // Track partial payments for this invoice
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project FreelanceProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+model InvoiceWorkSession {
+  id            String      @id @default(cuid())
+  invoiceId     String
+  workSessionId String
+  createdAt     DateTime    @default(now())
+
+  // Relations
+  invoice     Invoice     @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  workSession WorkSession @relation(fields: [workSessionId], references: [id], onDelete: Cascade)
+
+  @@unique([invoiceId, workSessionId])
+  @@map("invoice_work_sessions")
+}
+
+model PartialPayment {
+  id            String      @id @default(cuid())
+  userId        String
+  invoiceId     String?     // Optional - for invoice-based partial payments
+  workSessionId String?     // Optional - for session-based partial payments
+  amount        Int         // Stored in cents
+  paymentDate   DateTime
+  description   String?     // Payment description/notes
+  transactionId String?     // Link to the actual transaction
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice     Invoice?     @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  workSession WorkSession? @relation(fields: [workSessionId], references: [id], onDelete: Cascade)
+
+  @@map("partial_payments")
+}
+
+model Salary {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  gross     Int      // Stored in cents
+  net       Int      // Stored in cents
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deductions SalaryDeduction[]
+
+  @@map("salaries")
+}
+
+model SalaryDeduction {
+  id      String @id @default(cuid())
+  salaryId String
+  name    String
+  amount  Int    // Stored in cents
+  type    DeductionType
+
+  // Relations
+  salary Salary @relation(fields: [salaryId], references: [id], onDelete: Cascade)
+
+  @@map("salary_deductions")
+}
+
+model RecurringTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  accountId   String
+  categoryId  String
+  description String
+  amount      Int      // Stored in cents
+  frequency   Frequency
+  nextDueDate DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("recurring_transactions")
+}
+
+// Enums
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CREDIT
+  INVESTMENT
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+}
+
+enum PaymentType {
+  HOURLY_RATE
+  REFERENCE_ONLY
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+}
+
+enum DeductionType {
+  TAX
+  BENEFIT
+  OTHER
+}
+
+enum Frequency {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
