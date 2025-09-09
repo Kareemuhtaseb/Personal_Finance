@@ -305,7 +305,7 @@ const hasActiveFilters = computed(() => {
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 class="text-premium-large">Expenses</h1>
-        <p class="mt-2 text-lg text-premium-muted">
+        <p class="mt-2 text-premium-muted">
           Track and manage your expenses
         </p>
       </div>
@@ -343,7 +343,7 @@ const hasActiveFilters = computed(() => {
       <div class="relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div>
-            <label class="block text-base font-semibold text-white/90 mb-2">
+            <label class="block text-premium-small text-white/90 mb-2">
               Search
             </label>
             <input
@@ -355,7 +355,7 @@ const hasActiveFilters = computed(() => {
           </div>
           
           <div>
-            <label class="block text-base font-semibold text-white/90 mb-2">
+            <label class="block text-premium-small text-white/90 mb-2">
               Category
             </label>
             <select
@@ -374,7 +374,7 @@ const hasActiveFilters = computed(() => {
           </div>
           
           <div>
-            <label class="block text-base font-semibold text-white/90 mb-2">
+            <label class="block text-premium-small text-white/90 mb-2">
               Account
             </label>
             <select
@@ -428,23 +428,24 @@ const hasActiveFilters = computed(() => {
         
         <!-- Loading State -->
         <div v-if="loading" class="flex items-center justify-center py-12">
-          <div class="text-white/60 text-lg">Loading expenses...</div>
+          <div class="text-white/60 text-premium-muted">Loading expenses...</div>
         </div>
         
         <!-- Empty State -->
         <div v-else-if="filteredTransactions.length === 0" class="flex items-center justify-center py-12">
           <div class="text-center">
-            <div class="text-white/60 text-lg mb-2">
+            <div class="text-white/60 text-premium-muted mb-2">
               {{ transactions.length === 0 ? 'No expenses found' : 'No expenses match your filters' }}
             </div>
-            <div class="text-white/40 text-sm">
+            <div class="text-white/40 text-premium-small">
               {{ transactions.length === 0 ? 'Add your first expense to get started!' : 'Try adjusting your search or filter criteria' }}
             </div>
             <div v-if="transactions.length > 0" class="mt-4">
               <button 
                 @click="clearFilters"
-                class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+                class="btn-premium px-4 py-2 inline-flex items-center justify-center"
               >
+                <FunnelIcon class="h-4 w-4 mr-2" />
                 Clear Filters
               </button>
             </div>
@@ -457,7 +458,7 @@ const hasActiveFilters = computed(() => {
             v-for="(transaction, index) in filteredTransactions"
             :key="transaction.id"
             class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group animate-fade-in-scale cursor-pointer flex items-center justify-between"
-            :style="{ animationDelay: `${index * 0.1}s` }"
+            :class="`animate-delay-${Math.min(index * 100, 1000)}`"
           >
             <!-- Transaction card background effects -->
             <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
@@ -474,8 +475,8 @@ const hasActiveFilters = computed(() => {
               </div>
               
               <div>
-                <p class="text-lg font-semibold text-white group-hover/item:text-blue-200 transition-colors duration-300">{{ transaction.description }}</p>
-                <div class="flex items-center space-x-4 text-sm text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
+                <p class="text-premium font-semibold text-white group-hover/item:text-blue-200 transition-colors duration-300">{{ transaction.description }}</p>
+                <div class="flex items-center space-x-4 text-premium-small text-white/60 group-hover/item:text-white/80 transition-colors duration-300">
                   <span>{{ transaction.date }}</span>
                   <span>{{ transaction.category }}</span>
                   <span>{{ transaction.account }}</span>
@@ -533,12 +534,13 @@ const hasActiveFilters = computed(() => {
           <div>
             <label class="block text-white/90 mb-2">Amount</label>
             <input 
-              v-model="newExpense.amount"
+              :value="newExpense.amount"
               type="number" 
               step="0.01"
               required
               class="input-premium"
               placeholder="Enter amount"
+              @input="newExpense.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -659,7 +661,7 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Add Category Modal -->
-    <div v-if="showAddCategoryModal" class="modal-backdrop" style="z-index: 60;">
+    <div v-if="showAddCategoryModal" class="modal-backdrop z-60">
       <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-premium-medium">Add Expense Category</h3>
@@ -712,7 +714,7 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <!-- Edit Category Modal -->
-    <div v-if="showEditCategoryModal" class="modal-backdrop" style="z-index: 60;">
+    <div v-if="showEditCategoryModal" class="modal-backdrop z-60">
       <div class="modal-content">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-premium-medium">Edit Expense Category</h3>
@@ -795,7 +797,7 @@ const hasActiveFilters = computed(() => {
               v-for="(category, index) in categoriesStore.getExpenseCategories()"
               :key="category.id"
               class="p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] group/item relative overflow-hidden animate-fade-in-scale"
-              :style="{ animationDelay: `${index * 0.1}s` }"
+              :class="`animate-delay-${Math.min(index * 100, 1000)}`"
             >
               <!-- Category card background effects -->
               <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
@@ -844,8 +846,8 @@ const hasActiveFilters = computed(() => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
               </svg>
             </div>
-            <p class="text-white/60 text-lg mb-2">No expense categories found</p>
-            <p class="text-white/40 text-sm">Add your first expense category to get started!</p>
+            <p class="text-white/60 text-premium-muted mb-2">No expense categories found</p>
+            <p class="text-white/40 text-premium-small">Add your first expense category to get started!</p>
           </div>
         </div>
       </div>
@@ -854,52 +856,5 @@ const hasActiveFilters = computed(() => {
 </template>
 
 <style scoped>
-/* Custom glassmorphism enhancements */
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-.shadow-orange-500\/20 {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(249, 115, 22, 0.1);
-}
-
-.shadow-blue-500\/20 {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-/* Smooth transitions */
-* {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Input and select focus effects */
-input:focus, select:focus {
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
-}
-
-/* Button hover effects */
-button:hover {
-  transform: translateY(-1px);
-}
-
-/* Table row hover effects */
-tbody tr:hover {
-  transform: scale(1.01);
-}
+/* Expenses-specific styles only - animations and shadows are now global */
 </style>

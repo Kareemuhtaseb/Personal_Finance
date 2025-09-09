@@ -64,7 +64,7 @@ const handleViewAll = () => {
           v-for="(transaction, index) in transactions"
           :key="transaction.id"
           class="flex items-center justify-between p-4 glass rounded-lg hover:glass-hover transition-all duration-300 hover:scale-[1.02] group/item interactive"
-          :style="{ animationDelay: `${index * 0.1}s` }"
+          :class="`animate-delay-${Math.min(index * 100, 1000)}`"
         >
           <div class="flex items-center space-x-4">
             <div 
@@ -107,23 +107,5 @@ const handleViewAll = () => {
 </template>
 
 <style scoped>
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(249, 115, 22, 0.1);
-}
-
-.hover\:shadow-orange-500\/20:hover {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(249, 115, 22, 0.2);
-}
+/* RecentTransactions-specific styles only - animations and shadows are now global */
 </style>

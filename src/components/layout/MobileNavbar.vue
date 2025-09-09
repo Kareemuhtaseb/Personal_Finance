@@ -38,9 +38,9 @@ const navigation = [
         :class="[
           $route.path === item.href
             ? 'text-blue-300 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 backdrop-blur-sm shadow-lg shadow-blue-500/20'
-            : 'text-white/80 hover:text-white hover:bg-white/10'
+            : 'text-white/80 hover:text-white hover:bg-white/10',
+          `animate-delay-${Math.min(index * 100, 1000)}`
         ]"
-        :style="{ animationDelay: `${index * 0.1}s` }"
       >
         <!-- Active state background -->
         <div v-if="$route.path === item.href" class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl"></div>

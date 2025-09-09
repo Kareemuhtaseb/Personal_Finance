@@ -48,23 +48,5 @@ const props = defineProps<Props>()
 </template>
 
 <style scoped>
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(147, 51, 234, 0.1);
-}
-
-.hover\:shadow-purple-500\/20:hover {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(147, 51, 234, 0.2);
-}
+/* ChartCard-specific styles only - animations and shadows are now global */
 </style>

@@ -56,7 +56,7 @@ const textSizeClasses = {
             sizeClasses[size],
             colorClasses[color]
           ]"
-          style="animation-duration: 0.8s; animation-direction: reverse;"
+          class="animate-spin-reverse"
         ></div>
         
         <!-- Center dot -->

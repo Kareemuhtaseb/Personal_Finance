@@ -7,7 +7,8 @@ import {
   BriefcaseIcon, 
   ChartBarIcon, 
   Cog6ToothIcon,
-  XMarkIcon
+  XMarkIcon,
+  CogIcon
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '../../stores/auth'
 
@@ -33,6 +34,7 @@ const navigation = [
   { name: 'Expenses', href: '/expenses', icon: CreditCardIcon },
   { name: 'Income', href: '/income', icon: BanknotesIcon },
   { name: 'Freelance', href: '/freelance', icon: BriefcaseIcon },
+  { name: 'Operations', href: '/operations', icon: CogIcon },
   { name: 'Reports', href: '/reports', icon: ChartBarIcon },
   { name: 'Settings', href: '/settings', icon: Cog6ToothIcon }
 ]
@@ -54,7 +56,7 @@ const closeSidebar = () => {
 
   <!-- Sidebar -->
   <div class="hidden lg:flex lg:flex-shrink-0 lg:h-screen lg:fixed lg:left-0 lg:top-0 lg:z-30">
-    <div class="w-64 backdrop-blur-xl bg-white/10 border-r border-white/20 shadow-2xl shadow-blue-500/20 relative h-full flex flex-col">
+    <div class="w-64 backdrop-blur-xl bg-white-10 border-r border-white-20 shadow-2xl shadow-blue-500/20 relative h-full flex flex-col">
       <!-- Enhanced background for sidebar -->
       <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-r-3xl"></div>
       <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-r-3xl"></div>
@@ -90,9 +92,9 @@ const closeSidebar = () => {
             :class="[
               $route.path === item.href
                 ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm shadow-lg shadow-blue-500/20'
-                : 'text-white/80 hover:bg-white/10 hover:text-white hover:border hover:border-white/20'
+                : 'text-white/80 hover:bg-white-10 hover:text-white hover:border hover:border-white-20',
+              `animate-delay-${Math.min(index * 100, 1000)}`
             ]"
-            :style="{ animationDelay: `${index * 0.1}s` }"
           >
             <!-- Active state background -->
             <div v-if="$route.path === item.href" class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl"></div>
@@ -108,7 +110,7 @@ const closeSidebar = () => {
                 'p-2 rounded-lg transition-all duration-300 mr-3',
                 $route.path === item.href
                   ? 'bg-blue-500/20 text-blue-300'
-                  : 'bg-white/5 text-white/60 group-hover:bg-white/10 group-hover:text-white'
+                  : 'bg-white-5 text-white/60 group-hover:bg-white-10 group-hover:text-white'
               ]">
                 <component 
                   :is="item.icon" 
@@ -126,7 +128,7 @@ const closeSidebar = () => {
 
       <!-- User section -->
       <div class="relative z-10 p-4 border-t border-white/20 mt-auto">
-        <div class="flex items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group cursor-pointer">
+        <div class="flex items-center p-3 rounded-xl bg-white-5 hover:bg-white-10 transition-all duration-300 group cursor-pointer">
           <div class="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden">
             <!-- Avatar background animation -->
             <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -146,7 +148,7 @@ const closeSidebar = () => {
   <!-- Mobile sidebar -->
   <div 
     v-if="isOpen"
-    class="fixed inset-y-0 left-0 z-50 w-64 backdrop-blur-xl bg-white/10 border-r border-white/20 shadow-2xl shadow-blue-500/20 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col relative overflow-hidden"
+    class="fixed inset-y-0 left-0 z-50 w-64 backdrop-blur-xl bg-white-10 border-r border-white-20 shadow-2xl shadow-blue-500/20 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col relative overflow-hidden"
   >
     <!-- Enhanced background for mobile sidebar -->
     <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4"></div>
@@ -170,7 +172,7 @@ const closeSidebar = () => {
       <!-- Close button for mobile -->
       <button 
         @click="closeSidebar"
-        class="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+        class="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white-10 transition-all duration-300"
       >
         <XMarkIcon class="h-6 w-6" />
       </button>
@@ -187,9 +189,9 @@ const closeSidebar = () => {
           :class="[
             $route.path === item.href
               ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm shadow-lg shadow-blue-500/20'
-              : 'text-white/80 hover:bg-white/10 hover:text-white hover:border hover:border-white/20'
+              : 'text-white/80 hover:bg-white-10 hover:text-white hover:border hover:border-white-20',
+            `animate-delay-${Math.min(index * 100, 1000)}`
           ]"
-          :style="{ animationDelay: `${index * 0.1}s` }"
         >
           <!-- Active state background -->
           <div v-if="$route.path === item.href" class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl"></div>
@@ -205,7 +207,7 @@ const closeSidebar = () => {
               'p-2 rounded-lg transition-all duration-300 mr-3',
               $route.path === item.href
                 ? 'bg-blue-500/20 text-blue-300'
-                : 'bg-white/5 text-white/60 group-hover:bg-white/10 group-hover:text-white'
+                : 'bg-white-5 text-white/60 group-hover:bg-white-10 group-hover:text-white'
             ]">
               <component 
                 :is="item.icon" 
@@ -239,23 +241,5 @@ const closeSidebar = () => {
 </template>
 
 <style scoped>
-/* Custom glassmorphism enhancements */
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-/* Smooth transitions */
-* {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* Sidebar-specific styles only - animations and shadows are now global */
 </style>

@@ -127,15 +127,15 @@ const handleSubmit = async () => {
     <div class="absolute inset-0 overflow-hidden">
       <!-- Floating orbs -->
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-slate-600/8 to-gray-500/8 rounded-full blur-3xl animate-float"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-gray-500/8 to-slate-600/8 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-gray-500/8 to-slate-600/8 rounded-full blur-3xl animate-float animate-delay-2000"></div>
       <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-slate-500/5 to-gray-500/5 rounded-full blur-3xl animate-breathe"></div>
       
       <!-- Accent orbs -->
       <div class="absolute top-1/4 right-1/4 w-32 h-32 bg-gradient-to-br from-slate-400/10 to-gray-400/10 rounded-full blur-2xl animate-pulse-glow"></div>
-      <div class="absolute bottom-1/4 left-1/4 w-40 h-40 bg-gradient-to-tr from-gray-400/8 to-slate-400/8 rounded-full blur-2xl animate-pulse-glow" style="animation-delay: 1s;"></div>
+      <div class="absolute bottom-1/4 left-1/4 w-40 h-40 bg-gradient-to-tr from-gray-400/8 to-slate-400/8 rounded-full blur-2xl animate-pulse-glow animate-delay-1000"></div>
       
       <!-- Grid pattern overlay -->
-      <div class="absolute inset-0 opacity-[0.01]" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0); background-size: 24px 24px;"></div>
+      <div class="absolute inset-0 opacity-[0.01] bg-pattern-grid"></div>
     </div>
 
     <div class="w-full max-w-md relative z-10">
@@ -147,11 +147,11 @@ const handleSubmit = async () => {
           <span class="text-white font-bold text-2xl relative z-10">F</span>
         </div>
         <h1 class="text-4xl font-bold text-white mb-2 animate-slide-in-up">FinanceHub</h1>
-        <p class="text-white/70 animate-slide-in-up" style="animation-delay: 0.1s;">Manage your finances with ease</p>
+        <p class="text-white/70 animate-slide-in-up animate-delay-100">Manage your finances with ease</p>
       </div>
 
       <!-- Enhanced Login/Register Form -->
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 relative overflow-hidden animate-fade-in-scale" style="animation-delay: 0.2s;">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 relative overflow-hidden animate-fade-in-scale animate-delay-200">
         <!-- Form background effects -->
         <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
         <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
@@ -162,13 +162,13 @@ const handleSubmit = async () => {
         
         <!-- Floating particles -->
         <div class="absolute top-6 right-6 w-2 h-2 bg-blue-400/30 rounded-full animate-pulse-glow"></div>
-        <div class="absolute bottom-6 left-6 w-1 h-1 bg-purple-400/40 rounded-full animate-pulse-glow" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-6 left-6 w-1 h-1 bg-purple-400/40 rounded-full animate-pulse-glow animate-delay-1000"></div>
         <div class="relative z-10">
           <div class="text-center mb-6">
             <h2 class="text-2xl font-bold text-white mb-2 animate-slide-in-up">
               {{ isLogin ? 'Welcome Back' : 'Create Account' }}
             </h2>
-            <p class="text-white/70 animate-slide-in-up" style="animation-delay: 0.1s;">
+            <p class="text-white/70 animate-slide-in-up animate-delay-100">
               {{ isLogin ? 'Sign in to your account' : 'Get started with FinanceHub' }}
             </p>
           </div>
@@ -344,7 +344,7 @@ const handleSubmit = async () => {
         </form>
 
           <!-- Enhanced Toggle between login and register -->
-          <div class="mt-6 text-center animate-slide-in-up" style="animation-delay: 0.3s;">
+          <div class="mt-6 text-center animate-slide-in-up animate-delay-300">
             <p class="text-white/70">
               {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
               <button

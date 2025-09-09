@@ -57,7 +57,7 @@ const containerClasses = computed(() => {
 })
 
 const inputClasses = computed(() => {
-  const base = 'w-full bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none transition-all duration-300'
+  const base = 'w-full glass-bg backdrop-blur-sm glass-border rounded-xl text-white placeholder-white/50 focus:outline-none transition-normal'
   const iconPadding = props.icon ? 'pl-12' : 'pl-4'
   const passwordPadding = props.type === 'password' ? 'pr-12' : 'pr-4'
   
@@ -164,14 +164,5 @@ const togglePasswordVisibility = () => {
 </template>
 
 <style scoped>
-/* Custom focus effects */
-input:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Smooth transitions */
-* {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* EnhancedInput-specific styles only - focus effects are now global */
 </style>

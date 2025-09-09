@@ -177,6 +177,20 @@ const deleteTransaction = async () => {
     alert('Error deleting expense. Please try again.')
   }
 }
+
+// Clear all filters
+const clearFilters = () => {
+  console.log('Clearing filters...')
+  searchQuery.value = ''
+  selectedCategory.value = 'all'
+  selectedAccount.value = 'all'
+  console.log('Filters cleared:', { searchQuery: searchQuery.value, selectedCategory: selectedCategory.value, selectedAccount: selectedAccount.value })
+}
+
+// Check if any filters are active
+const hasActiveFilters = computed(() => {
+  return searchQuery.value !== '' || selectedCategory.value !== 'all' || selectedAccount.value !== 'all'
+})
 </script>
 
 <template>
@@ -262,9 +276,13 @@ const deleteTransaction = async () => {
           </div>
           
           <div class="flex items-end">
-            <button class="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+            <button 
+              type="button"
+              @click="clearFilters"
+              class="btn-premium w-full inline-flex items-center justify-center"
+            >
               <FunnelIcon class="h-5 w-5 mr-2" />
-              Filter
+              Clear Filters
             </button>
           </div>
         </div>
@@ -285,8 +303,21 @@ const deleteTransaction = async () => {
         <!-- Empty State -->
         <div v-else-if="filteredTransactions.length === 0" class="flex items-center justify-center py-12">
           <div class="text-center">
-            <div class="text-white/60 text-lg mb-2">No expenses found</div>
-            <div class="text-white/40 text-sm">Add your first expense to get started!</div>
+            <div class="text-white/60 text-lg mb-2">
+              {{ transactions.length === 0 ? 'No expenses found' : 'No expenses match your filters' }}
+            </div>
+            <div class="text-white/40 text-sm">
+              {{ transactions.length === 0 ? 'Add your first expense to get started!' : 'Try adjusting your search or filter criteria' }}
+            </div>
+            <div v-if="transactions.length > 0" class="mt-4">
+              <button 
+                @click="clearFilters"
+                class="btn-premium px-4 py-2 inline-flex items-center justify-center"
+              >
+                <FunnelIcon class="h-4 w-4 mr-2" />
+                Clear Filters
+              </button>
+            </div>
           </div>
         </div>
         
@@ -364,12 +395,13 @@ const deleteTransaction = async () => {
           <div>
             <label class="block text-white/90 mb-2">Amount</label>
             <input 
-              v-model="newExpense.amount"
+              :value="newExpense.amount"
               type="number" 
               step="0.01"
               required
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
               placeholder="Enter amount"
+              @input="newExpense.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           

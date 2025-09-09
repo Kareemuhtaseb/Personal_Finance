@@ -719,6 +719,213 @@ class ApiService {
     const userStr = localStorage.getItem('user')
     return userStr ? JSON.parse(userStr) : null
   }
+
+  // Operations API methods
+  // Orders
+  async getOrders(params?: { status?: string; priority?: string; type?: string; sortBy?: string; sortOrder?: string }): Promise<{ data: ApiResponse<any[]> }> {
+    const queryParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) queryParams.append(key, value)
+      })
+    }
+    const query = queryParams.toString() ? `?${queryParams.toString()}` : ''
+    return this.makeRequest<any[]>(`/operations/orders${query}`)
+  }
+
+  async getOrder(id: string): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/orders/${id}`)
+  }
+
+  async createOrder(orderData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>('/operations/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData)
+    })
+  }
+
+  async updateOrder(id: string, orderData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(orderData)
+    })
+  }
+
+  async deleteOrder(id: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/operations/orders/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Inventory
+  async getItems(params?: { search?: string; lowStock?: boolean; sortBy?: string; sortOrder?: string }): Promise<{ data: ApiResponse<any[]> }> {
+    const queryParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) queryParams.append(key, value.toString())
+      })
+    }
+    const query = queryParams.toString() ? `?${queryParams.toString()}` : ''
+    return this.makeRequest<any[]>(`/operations/inventory${query}`)
+  }
+
+  async getItem(id: string): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/inventory/${id}`)
+  }
+
+  async createItem(itemData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>('/operations/inventory', {
+      method: 'POST',
+      body: JSON.stringify(itemData)
+    })
+  }
+
+  async updateItem(id: string, itemData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/inventory/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(itemData)
+    })
+  }
+
+  async deleteItem(id: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/operations/inventory/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  async getLowStockAlerts(): Promise<{ data: ApiResponse<any[]> }> {
+    return this.makeRequest<any[]>('/operations/inventory/low-stock')
+  }
+
+  async bulkUpdateInventory(data: any): Promise<{ data: ApiResponse }> {
+    return this.makeRequest('/operations/inventory/bulk-update', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Tasks
+  async getTasks(params?: { status?: string; orderId?: string; workshopId?: string; assignedTo?: string; sortBy?: string; sortOrder?: string }): Promise<{ data: ApiResponse<any[]> }> {
+    const queryParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) queryParams.append(key, value)
+      })
+    }
+    const query = queryParams.toString() ? `?${queryParams.toString()}` : ''
+    return this.makeRequest<any[]>(`/operations/tasks${query}`)
+  }
+
+  async getTasksByStatus(): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>('/operations/tasks/by-status')
+  }
+
+  async getTask(id: string): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/tasks/${id}`)
+  }
+
+  async createTask(taskData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>('/operations/tasks', {
+      method: 'POST',
+      body: JSON.stringify(taskData)
+    })
+  }
+
+  async updateTask(id: string, taskData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/tasks/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(taskData)
+    })
+  }
+
+  async updateTaskStatus(id: string, status: string): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/tasks/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status })
+    })
+  }
+
+  async deleteTask(id: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/operations/tasks/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  async addTaskCost(taskId: string, costData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/tasks/${taskId}/costs`, {
+      method: 'POST',
+      body: JSON.stringify(costData)
+    })
+  }
+
+  async removeTaskCost(taskId: string, costId: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/operations/tasks/${taskId}/costs/${costId}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Workshops
+  async getWorkshops(params?: { client?: string; organization?: string; location?: string; orderId?: string; sortBy?: string; sortOrder?: string }): Promise<{ data: ApiResponse<any[]> }> {
+    const queryParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) queryParams.append(key, value)
+      })
+    }
+    const query = queryParams.toString() ? `?${queryParams.toString()}` : ''
+    return this.makeRequest<any[]>(`/operations/workshops${query}`)
+  }
+
+  async getWorkshop(id: string): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/workshops/${id}`)
+  }
+
+  async createWorkshop(workshopData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>('/operations/workshops', {
+      method: 'POST',
+      body: JSON.stringify(workshopData)
+    })
+  }
+
+  async updateWorkshop(id: string, workshopData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/workshops/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(workshopData)
+    })
+  }
+
+  async deleteWorkshop(id: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/operations/workshops/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  async addWorkshopCost(workshopId: string, costData: any): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/workshops/${workshopId}/costs`, {
+      method: 'POST',
+      body: JSON.stringify(costData)
+    })
+  }
+
+  async removeWorkshopCost(workshopId: string, costId: string): Promise<{ data: ApiResponse }> {
+    return this.makeRequest(`/operations/workshops/${workshopId}/costs/${costId}`, {
+      method: 'DELETE'
+    })
+  }
+
+  async exportWorkshopSummary(id: string): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>(`/operations/workshops/${id}/export`)
+  }
+
+  // Operations Dashboard
+  async getOperationsDashboard(period?: string): Promise<{ data: ApiResponse<any> }> {
+    const query = period ? `?period=${period}` : ''
+    return this.makeRequest<any>(`/operations/dashboard${query}`)
+  }
+
+  async getOperationsSummary(): Promise<{ data: ApiResponse<any> }> {
+    return this.makeRequest<any>('/operations/summary')
+  }
 }
 
 // Create and export a singleton instance

@@ -86,6 +86,8 @@ const bulkPaymentData = ref({
 // Pagination state
 const activeProjectsPage = ref(1)
 const completedProjectsPage = ref(1)
+const invoicesPage = ref(1)
+const workSessionsPage = ref(1)
 const itemsPerPage = 3
 
 // Invoice form data
@@ -163,6 +165,22 @@ const paginatedCompletedProjects = computed(() => {
 
 const totalActivePages = computed(() => Math.ceil(activeProjects.value.length / itemsPerPage))
 const totalCompletedPages = computed(() => Math.ceil(completedProjects.value.length / itemsPerPage))
+const totalInvoicesPages = computed(() => Math.ceil(invoices.value.length / itemsPerPage))
+const totalWorkSessionsPages = computed(() => Math.ceil(filteredWorkSessions.value.length / itemsPerPage))
+
+// Paginated invoices
+const paginatedInvoices = computed(() => {
+  const start = (invoicesPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return invoices.value.slice(start, end)
+})
+
+// Paginated work sessions
+const paginatedWorkSessions = computed(() => {
+  const start = (workSessionsPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredWorkSessions.value.slice(start, end)
+})
 
 // Filtered work sessions based on selected project with sorting
 const filteredWorkSessions = computed(() => {
@@ -383,6 +401,18 @@ const goToActivePage = (page: number) => {
 const goToCompletedPage = (page: number) => {
   if (page >= 1 && page <= totalCompletedPages.value) {
     completedProjectsPage.value = page
+  }
+}
+
+const goToInvoicesPage = (page: number) => {
+  if (page >= 1 && page <= totalInvoicesPages.value) {
+    invoicesPage.value = page
+  }
+}
+
+const goToWorkSessionsPage = (page: number) => {
+  if (page >= 1 && page <= totalWorkSessionsPages.value) {
+    workSessionsPage.value = page
   }
 }
 
@@ -688,6 +718,11 @@ const deleteInvoice = async (invoiceId: string) => {
 
 // Watchers
 // Note: Removed auto-calculation watcher to make invoice amount manual
+
+// Reset work sessions pagination when project filter changes
+watch(selectedProjectForSessions, () => {
+  workSessionsPage.value = 1
+})
 
 // Lifecycle
 onMounted(() => {
@@ -1150,9 +1185,9 @@ onMounted(() => {
         <div class="space-y-4 min-h-[400px]">
           <transition-group name="project-fade" tag="div" class="space-y-4">
             <div
-              v-for="invoice in invoices"
+              v-for="invoice in paginatedInvoices"
               :key="invoice.id"
-              class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group"
+              class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group cursor-pointer"
             >
               <!-- Invoice card background effects -->
               <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
@@ -1231,6 +1266,52 @@ onMounted(() => {
             </div>
           </transition-group>
         </div>
+        
+        <!-- Enhanced Pagination for Invoices -->
+        <div v-if="totalInvoicesPages > 1" class="flex items-center justify-center mt-6 pt-4 border-t border-white/10">
+          <div class="flex items-center space-x-3">
+            <!-- Previous Button -->
+            <button 
+              @click="goToInvoicesPage(invoicesPage - 1)"
+              :disabled="invoicesPage === 1"
+              class="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-all duration-300 hover:scale-105 disabled:hover:scale-100 flex items-center space-x-2"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Previous</span>
+            </button>
+            
+            <!-- Page Numbers -->
+            <div class="flex items-center space-x-2">
+              <button
+                v-for="page in totalInvoicesPages"
+                :key="page"
+                @click="goToInvoicesPage(page)"
+                :class="[
+                  'px-3 py-2 text-sm rounded-lg transition-all duration-300 hover:scale-105',
+                  invoicesPage === page
+                    ? 'bg-purple-500/80 text-white shadow-lg shadow-purple-500/20'
+                    : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'
+                ]"
+              >
+                {{ page }}
+              </button>
+            </div>
+            
+            <!-- Next Button -->
+            <button 
+              @click="goToInvoicesPage(invoicesPage + 1)"
+              :disabled="invoicesPage === totalInvoicesPages"
+              class="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-all duration-300 hover:scale-105 disabled:hover:scale-100 flex items-center space-x-2"
+            >
+              <span>Next</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
       </div>
     </div>
@@ -1287,9 +1368,9 @@ onMounted(() => {
         <div class="space-y-4 min-h-[400px]">
           <transition-group name="project-fade" tag="div" class="space-y-4">
             <div
-              v-for="session in filteredWorkSessions"
+              v-for="session in paginatedWorkSessions"
               :key="session.id"
-              class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group"
+              class="p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden group cursor-pointer"
             >
               <!-- Session card background effects -->
               <div class="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent rounded-2xl"></div>
@@ -1352,6 +1433,52 @@ onMounted(() => {
             </div>
           </transition-group>
         </div>
+        
+        <!-- Enhanced Pagination for Work Sessions -->
+        <div v-if="totalWorkSessionsPages > 1" class="flex items-center justify-center mt-6 pt-4 border-t border-white/10">
+          <div class="flex items-center space-x-3">
+            <!-- Previous Button -->
+            <button 
+              @click="goToWorkSessionsPage(workSessionsPage - 1)"
+              :disabled="workSessionsPage === 1"
+              class="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-all duration-300 hover:scale-105 disabled:hover:scale-100 flex items-center space-x-2"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Previous</span>
+            </button>
+            
+            <!-- Page Numbers -->
+            <div class="flex items-center space-x-2">
+              <button
+                v-for="page in totalWorkSessionsPages"
+                :key="page"
+                @click="goToWorkSessionsPage(page)"
+                :class="[
+                  'px-3 py-2 text-sm rounded-lg transition-all duration-300 hover:scale-105',
+                  workSessionsPage === page
+                    ? 'bg-blue-500/80 text-white shadow-lg shadow-blue-500/20'
+                    : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'
+                ]"
+              >
+                {{ page }}
+              </button>
+            </div>
+            
+            <!-- Next Button -->
+            <button 
+              @click="goToWorkSessionsPage(workSessionsPage + 1)"
+              :disabled="workSessionsPage === totalWorkSessionsPages"
+              class="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-all duration-300 hover:scale-105 disabled:hover:scale-100 flex items-center space-x-2"
+            >
+              <span>Next</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
       </div>
     </div>
@@ -1385,11 +1512,12 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Hourly Rate ($)</label>
             <input 
-              v-model.number="newProject.hourlyRate"
+              :value="newProject.hourlyRate"
               type="number" 
               step="0.01"
               class="input-premium"
               placeholder="0.00"
+              @input="newProject.hourlyRate = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -1450,11 +1578,12 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Amount ($)</label>
             <input 
-              v-model.number="paymentData.amount"
+q              :value="paymentData.amount"
               type="number" 
               step="0.01"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
               placeholder="0.00"
+              @input="paymentData.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -1507,11 +1636,12 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Break Duration (minutes)</label>
             <input 
-              v-model.number="workSessionData.breakDuration"
+              :value="workSessionData.breakDuration"
               type="number" 
               min="0"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
               placeholder="0"
+              @input="workSessionData.breakDuration = parseInt(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
         </div>
@@ -1555,12 +1685,13 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Work Hours</label>
             <input 
-              v-model.number="manualWorkData.workHours"
+              :value="manualWorkData.workHours"
               type="number" 
               step="0.25"
               min="0"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
               placeholder="0.00"
+              @input="manualWorkData.workHours = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -1628,12 +1759,13 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Work Hours</label>
             <input 
-              v-model.number="editWorkData.workHours"
+              :value="editWorkData.workHours"
               type="number" 
               step="0.25"
               min="0"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
               placeholder="0.00"
+              @input="editWorkData.workHours = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -1688,11 +1820,12 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Payment Amount ($)</label>
             <input 
-              v-model.number="paymentDialogData.amount"
+              :value="paymentDialogData.amount"
               type="number" 
               step="0.01"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
               placeholder="0.00"
+              @input="paymentDialogData.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -1749,11 +1882,12 @@ onMounted(() => {
           <div>
             <label class="block text-white/70 text-sm mb-2">Total Payment Amount ($)</label>
             <input 
-              v-model.number="bulkPaymentData.amount"
+              :value="bulkPaymentData.amount"
               type="number" 
               step="0.01"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-blue-500"
               placeholder="0.00"
+              @input="bulkPaymentData.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -1860,9 +1994,10 @@ onMounted(() => {
             <input 
               type="number" 
               step="0.01" 
-              v-model="invoiceData.amount" 
+              :value="invoiceData.amount" 
               class="input-premium"
               placeholder="0.00"
+              @input="invoiceData.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
             >
             <p class="text-white/50 text-xs mt-1">Enter the amount you want to invoice the client</p>
           </div>
@@ -1916,65 +2051,76 @@ onMounted(() => {
     </div>
 
     <!-- Partial Payment Modal -->
-    <div v-if="showPartialPaymentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
-      <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl">
-        <h3 class="text-2xl font-bold text-gray-800 mb-6">Record Partial Payment</h3>
+    <div v-if="showPartialPaymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4 relative overflow-hidden">
+        <!-- Enhanced background effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/8 to-white/4 rounded-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/3 to-transparent rounded-3xl"></div>
         
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Amount ($)</label>
-            <input 
-              type="number" 
-              step="0.01" 
-              v-model="partialPaymentData.amount" 
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="0.00"
+        <!-- Animated border gradient -->
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 opacity-50"></div>
+        <div class="absolute inset-[1px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 rounded-3xl"></div>
+        
+        <div class="relative z-10">
+          <h3 class="text-2xl font-bold text-white mb-6">Record Partial Payment</h3>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-white/90 mb-2">Amount ($)</label>
+              <input 
+                type="number" 
+                step="0.01" 
+                :value="partialPaymentData.amount" 
+                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
+                placeholder="0.00"
+                @input="partialPaymentData.amount = parseFloat(($event.target as HTMLInputElement).value) || 0"
+              >
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-white/90 mb-2">Payment Date</label>
+              <input 
+                type="date" 
+                v-model="partialPaymentData.paymentDate" 
+                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
+              >
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-white/90 mb-2">Description (Optional)</label>
+              <input 
+                type="text" 
+                v-model="partialPaymentData.description" 
+                class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
+                placeholder="Payment description..."
+              >
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-white/90 mb-2">Account</label>
+              <select v-model="partialPaymentData.accountId" class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300">
+                <option value="">Select an account</option>
+                <option v-for="account in accounts" :key="account.id" :value="account.id">
+                  {{ account.name }} ({{ account.type }})
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex space-x-3 mt-6">
+            <button 
+              @click="createPartialPayment"
+              class="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
             >
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date</label>
-            <input 
-              type="date" 
-              v-model="partialPaymentData.paymentDate" 
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              Record Payment
+            </button>
+            <button 
+              @click="showPartialPaymentModal = false"
+              class="flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 border border-white/20"
             >
+              Cancel
+            </button>
           </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Description (Optional)</label>
-            <input 
-              type="text" 
-              v-model="partialPaymentData.description" 
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="Payment description..."
-            >
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Account</label>
-            <select v-model="partialPaymentData.accountId" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
-              <option value="">Select an account</option>
-              <option v-for="account in accounts" :key="account.id" :value="account.id">
-                {{ account.name }} ({{ account.type }})
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="flex space-x-3 mt-6">
-          <button 
-            @click="createPartialPayment"
-            class="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors"
-          >
-            Record Payment
-          </button>
-          <button 
-            @click="showPartialPaymentModal = false"
-            class="flex-1 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-xl transition-colors"
-          >
-            Cancel
-          </button>
         </div>
       </div>
     </div>

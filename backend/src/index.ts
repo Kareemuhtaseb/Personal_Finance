@@ -46,6 +46,11 @@ import transactionRoutes from './routes/transactionRoutes';
 import accountRoutes from './routes/accountRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import freelanceRoutes from './routes/freelanceRoutes';
+import orderRoutes from './routes/orderRoutes';
+import inventoryRoutes from './routes/inventoryRoutes';
+import taskRoutes from './routes/taskRoutes';
+import workshopRoutes from './routes/workshopRoutes';
+import operationsRoutes from './routes/operationsRoutes';
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -54,6 +59,11 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/freelance', freelanceRoutes);
+app.use('/api/operations/orders', orderRoutes);
+app.use('/api/operations/inventory', inventoryRoutes);
+app.use('/api/operations/tasks', taskRoutes);
+app.use('/api/operations/workshops', workshopRoutes);
+app.use('/api/operations', operationsRoutes);
 // app.use('/api/savings', savingsRoutes);
 // app.use('/api/reports', reportRoutes);
 

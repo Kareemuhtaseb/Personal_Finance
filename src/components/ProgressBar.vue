@@ -60,7 +60,7 @@ const glowClasses = {
     <!-- Progress bar container -->
     <div 
       :class="[
-        'w-full bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/20',
+        'w-full bg-white-10 rounded-full overflow-hidden backdrop-blur-sm border border-white-20',
         sizeClasses[size]
       ]"
     >
@@ -87,7 +87,7 @@ const glowClasses = {
             'absolute inset-0 rounded-full opacity-50',
             colorClasses[color]
           ]"
-          style="filter: blur(4px);"
+          class="filter-blur-md"
         ></div>
       </div>
     </div>

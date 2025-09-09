@@ -62,11 +62,11 @@ const calculateTotal = () => {
                     class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
                   />
                   <input
-                    v-model="source.amount"
+                    :value="source.amount"
                     type="number"
                     placeholder="Amount"
                     class="w-28 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/50 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-300"
-                    @input="calculateTotal"
+                    @input="source.amount = parseFloat(($event.target as HTMLInputElement).value) || 0; calculateTotal()"
                   />
                 </div>
               </div>
@@ -122,21 +122,18 @@ const calculateTotal = () => {
     </div>
 
     <!-- Monthly Breakdown with glassmorphism -->
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl shadow-purple-500/20 p-8 hover:shadow-purple-500/30 transition-all duration-500 hover:scale-[1.02] group">
-      <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-3xl"></div>
-      <div class="relative z-10">
-        <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-purple-200 transition-colors duration-300">Monthly Breakdown</h3>
+    <div class="glass-card shadow-purple-glow p-8 hover:shadow-purple-500/30 transition-all duration-500 hover:scale-[1.02] group">
+      <h3 class="text-2xl font-bold text-white mb-6 tracking-wide group-hover:text-purple-200 transition-colors duration-300">Monthly Breakdown</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="text-center p-6 glass-bg backdrop-blur-sm rounded-2xl glass-border">
+          <p class="text-sm text-white/70 mb-2">Monthly Income</p>
+          <p class="text-2xl font-bold text-green-400">${{ Math.round(income.total / 12).toLocaleString() }}</p>
+        </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <p class="text-sm text-white/70 mb-2">Monthly Income</p>
-            <p class="text-2xl font-bold text-green-400">${{ Math.round(income.total / 12).toLocaleString() }}</p>
-          </div>
-          
-          <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <p class="text-sm text-white/70 mb-2">Annual Income</p>
-            <p class="text-2xl font-bold text-blue-400">${{ income.total.toLocaleString() }}</p>
-          </div>
+        <div class="text-center p-6 glass-bg backdrop-blur-sm rounded-2xl glass-border">
+          <p class="text-sm text-white/70 mb-2">Annual Income</p>
+          <p class="text-2xl font-bold text-blue-400">${{ income.total.toLocaleString() }}</p>
         </div>
       </div>
     </div>
@@ -144,46 +141,7 @@ const calculateTotal = () => {
 </template>
 
 <style scoped>
-/* Custom glassmorphism enhancements */
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-.shadow-green-500\/20 {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(34, 197, 94, 0.1);
-}
-
-.shadow-blue-500\/20 {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-.shadow-purple-500\/20 {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(147, 51, 234, 0.1);
-}
-
-/* Smooth transitions */
-* {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* Salary-specific styles only - animations and shadows are now global */
 
 /* Input focus effects */
 input:focus {

@@ -263,7 +263,7 @@ const deleteAccount = async (account: any) => {
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 class="text-premium-large">Settings</h1>
-        <p class="mt-2 text-lg text-white/70">
+        <p class="mt-2 text-premium-muted">
           Manage your account and preferences
         </p>
       </div>
@@ -287,7 +287,7 @@ const deleteAccount = async (account: any) => {
             :key="tab.id"
             @click="activeTab = tab.id"
             :class="[
-              'py-6 px-1 border-b-2 font-semibold text-base transition-all duration-300',
+              'py-6 px-1 border-b-2 font-semibold text-premium-small transition-all duration-300',
               activeTab === tab.id
                 ? 'border-blue-400 text-blue-300'
                 : 'border-transparent text-white/70 hover:text-white hover:border-white/40'
@@ -315,7 +315,7 @@ const deleteAccount = async (account: any) => {
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <label class="block text-base font-semibold text-white/90 mb-2">
+              <label class="block text-premium-small text-white/90 mb-2">
                 Full Name
               </label>
               <input
@@ -327,7 +327,7 @@ const deleteAccount = async (account: any) => {
             </div>
             
             <div>
-              <label class="block text-base font-semibold text-white/90 mb-2">
+              <label class="block text-premium-small text-white/90 mb-2">
                 Email
               </label>
               <input
@@ -339,7 +339,7 @@ const deleteAccount = async (account: any) => {
             </div>
             
             <div>
-              <label class="block text-base font-semibold text-white/90 mb-2">
+              <label class="block text-premium-small text-white/90 mb-2">
                 Timezone
               </label>
               <select
@@ -357,7 +357,7 @@ const deleteAccount = async (account: any) => {
             </div>
             
             <div>
-              <label class="block text-base font-semibold text-white/90 mb-2">
+              <label class="block text-premium-small text-white/90 mb-2">
                 Currency
               </label>
               <select
@@ -392,7 +392,7 @@ const deleteAccount = async (account: any) => {
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label class="block text-base font-semibold text-white/90 mb-2">
+                <label class="block text-premium-small text-white/90 mb-2">
                   Current Password
                 </label>
                 <input
@@ -404,7 +404,7 @@ const deleteAccount = async (account: any) => {
               </div>
               
               <div>
-                <label class="block text-base font-semibold text-white/90 mb-2">
+                <label class="block text-premium-small text-white/90 mb-2">
                   New Password
                 </label>
                 <input
@@ -416,7 +416,7 @@ const deleteAccount = async (account: any) => {
               </div>
               
               <div>
-                <label class="block text-base font-semibold text-white/90 mb-2">
+                <label class="block text-premium-small text-white/90 mb-2">
                   Confirm New Password
                 </label>
                 <input
@@ -454,7 +454,7 @@ const deleteAccount = async (account: any) => {
           
           <!-- Loading State -->
           <div v-if="accountsStore.loading" class="flex items-center justify-center py-12">
-            <div class="text-white/60 text-lg">Loading accounts...</div>
+            <div class="text-white/60 text-premium-muted">Loading accounts...</div>
           </div>
           
           <!-- Accounts List -->
@@ -466,7 +466,7 @@ const deleteAccount = async (account: any) => {
             >
               <div class="flex items-center justify-between">
                 <div>
-                  <h4 class="text-lg font-semibold text-white">{{ account.name }}</h4>
+                  <h4 class="text-premium font-semibold text-white">{{ account.name }}</h4>
                   <p class="text-sm text-white/70 capitalize">{{ account.type }} • {{ account.currency }}</p>
                   <p class="text-xs text-white/50" :class="account.isActive ? 'text-green-400' : 'text-red-400'">
                     {{ account.isActive ? 'Active' : 'Inactive' }}
@@ -506,8 +506,8 @@ const deleteAccount = async (account: any) => {
           <!-- Empty State -->
           <div v-else class="flex items-center justify-center py-12">
             <div class="text-center">
-              <div class="text-white/60 text-lg mb-2">No accounts found</div>
-              <div class="text-white/40 text-sm">Add your first account to get started!</div>
+              <div class="text-white/60 text-premium-muted mb-2">No accounts found</div>
+              <div class="text-white/40 text-premium-small">Add your first account to get started!</div>
             </div>
           </div>
         </div>
@@ -528,7 +528,7 @@ const deleteAccount = async (account: any) => {
           
           <div class="space-y-6">
             <div class="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
-              <h4 class="text-lg font-semibold text-white mb-4">Default Currency</h4>
+              <h4 class="text-premium font-semibold text-white mb-4">Default Currency</h4>
               <p class="text-white/70 mb-4">Set your default currency for new accounts and transactions.</p>
               
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -563,7 +563,7 @@ const deleteAccount = async (account: any) => {
             </div>
             
             <div class="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
-              <h4 class="text-lg font-semibold text-white mb-4">Currency Information</h4>
+              <h4 class="text-premium font-semibold text-white mb-4">Currency Information</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h5 class="text-md font-semibold text-white/90 mb-2">Current Default</h5>
@@ -634,11 +634,12 @@ const deleteAccount = async (account: any) => {
           <div>
             <label class="block text-white/90 mb-2">Initial Balance</label>
             <input 
-              v-model="newAccount.balance"
+              :value="newAccount.balance"
               type="number" 
               step="0.01"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
               placeholder="Enter initial balance"
+              @input="newAccount.balance = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -649,6 +650,7 @@ const deleteAccount = async (account: any) => {
               required
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
             >
+              <option value="" disabled>Select Currency</option>
               <option 
                 v-for="currency in availableCurrencies" 
                 :key="currency.code" 
@@ -720,11 +722,12 @@ const deleteAccount = async (account: any) => {
           <div>
             <label class="block text-white/90 mb-2">Balance</label>
             <input 
-              v-model="newAccount.balance"
+              :value="newAccount.balance"
               type="number" 
               step="0.01"
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
               placeholder="Enter balance"
+              @input="newAccount.balance = parseFloat(($event.target as HTMLInputElement).value) || 0"
             />
           </div>
           
@@ -735,6 +738,7 @@ const deleteAccount = async (account: any) => {
               required
               class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white"
             >
+              <option value="" disabled>Select Currency</option>
               <option 
                 v-for="currency in availableCurrencies" 
                 :key="currency.code" 
@@ -769,33 +773,5 @@ const deleteAccount = async (account: any) => {
 </template>
 
 <style scoped>
-/* Custom glassmorphism enhancements */
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-/* Smooth transitions */
-* {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Input focus effects */
-input:focus, select:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Button hover effects */
-button:hover {
-  transform: translateY(-1px);
-}
+/* Settings-specific styles only - animations and shadows are now global */
 </style>

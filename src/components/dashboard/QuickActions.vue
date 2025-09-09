@@ -31,9 +31,9 @@ const handleNavigation = (href: string) => {
           @click="handleNavigation(action.href)"
           :class="[
             'p-4 rounded-xl text-white font-medium transition-all duration-300 hover:scale-105 focus-ring group/action relative overflow-hidden',
-            action.color
+            action.color,
+            `animate-delay-${Math.min(index * 100, 1000)}`
           ]"
-          :style="{ animationDelay: `${index * 0.1}s` }"
         >
           <!-- Button background glow -->
           <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover/action:opacity-100 transition-opacity duration-300"></div>
@@ -51,23 +51,5 @@ const handleNavigation = (href: string) => {
 </template>
 
 <style scoped>
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(34, 197, 94, 0.1);
-}
-
-.hover\:shadow-green-500\/20:hover {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(34, 197, 94, 0.2);
-}
+/* QuickActions-specific styles only - animations and shadows are now global */
 </style>

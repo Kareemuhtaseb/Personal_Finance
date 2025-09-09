@@ -46,9 +46,9 @@ const colorClasses = computed(() => {
     case 'red':
       return 'bg-gradient-to-br from-red-500/15 to-red-600/15 text-red-400 border-red-400/20'
     case 'blue':
-      return 'bg-gradient-to-br from-slate-500/15 to-slate-600/15 text-slate-400 border-slate-400/20'
+      return 'bg-gradient-to-br from-blue-500/15 to-blue-600/15 text-blue-400 border-blue-400/20'
     case 'purple':
-      return 'bg-gradient-to-br from-gray-500/15 to-gray-600/15 text-gray-400 border-gray-400/20'
+      return 'bg-gradient-to-br from-purple-500/15 to-purple-600/15 text-purple-400 border-purple-400/20'
     case 'yellow':
       return 'bg-gradient-to-br from-yellow-500/15 to-yellow-600/15 text-yellow-400 border-yellow-400/20'
     default:
@@ -138,23 +138,5 @@ const formatValue = (value: number) => {
 </template>
 
 <style scoped>
-.backdrop-blur-xl {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Enhanced shadows */
-.shadow-2xl {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.1);
-}
-
-.hover\:shadow-blue-500\/20:hover {
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 40px rgba(59, 130, 246, 0.2);
-}
+/* KPIWidget-specific styles only - animations and shadows are now global */
 </style>

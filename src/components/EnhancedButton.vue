@@ -36,11 +36,11 @@ const sizeClasses = {
 }
 
 const variantClasses = {
-  primary: 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl',
-  secondary: 'bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/30 backdrop-blur-sm',
-  outline: 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50',
-  ghost: 'bg-transparent hover:bg-white/10 text-white/80 hover:text-white',
-  danger: 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl'
+  primary: 'btn-primary text-white shadow-lg hover:shadow-xl',
+  secondary: 'btn-secondary text-white border backdrop-blur-sm',
+  outline: 'bg-transparent hover:glass-bg-hover text-white glass-border hover:glass-border-hover',
+  ghost: 'bg-transparent hover:glass-bg-hover text-white/80 hover:text-white',
+  danger: 'btn-danger text-white shadow-lg hover:shadow-xl'
 }
 
 const buttonClasses = computed(() => {
@@ -112,28 +112,5 @@ const handleClick = (event: MouseEvent) => {
 </template>
 
 <style scoped>
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  animation: shimmer 2s infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Smooth transitions */
-* {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* EnhancedButton-specific styles only - animations are now global */
 </style>
