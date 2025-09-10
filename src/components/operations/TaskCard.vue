@@ -114,9 +114,9 @@
 
     <!-- Task Costs -->
     <div v-if="task.taskCosts && task.taskCosts.length > 0" class="mb-3">
-      <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+      <div class="flex items-center justify-between text-xs text-white/70 mb-1">
         <span>Costs:</span>
-        <span class="font-medium text-gray-700">
+        <span class="font-medium text-white">
           ${{ totalCosts.toFixed(2) }}
         </span>
       </div>
@@ -124,14 +124,14 @@
         <div
           v-for="cost in task.taskCosts.slice(0, 2)"
           :key="cost.id"
-          class="flex items-center justify-between text-xs"
+          class="flex items-center justify-between text-xs bg-white/5 rounded-lg p-2"
         >
-          <span class="text-gray-600 truncate">{{ cost.description }}</span>
-          <span class="text-gray-700 font-medium">${{ (cost.amount / 100).toFixed(2) }}</span>
+          <span class="text-white/80 truncate">{{ cost.description }}</span>
+          <span class="text-white font-medium">${{ (cost.amount / 100).toFixed(2) }}</span>
         </div>
         <div
           v-if="task.taskCosts.length > 2"
-          class="text-xs text-gray-500"
+          class="text-xs text-white/60"
         >
           +{{ task.taskCosts.length - 2 }} more
         </div>

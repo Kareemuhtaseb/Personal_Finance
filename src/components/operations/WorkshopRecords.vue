@@ -132,15 +132,15 @@
         
         <!-- Workshop Costs -->
         <div v-if="workshop.workshopCosts && workshop.workshopCosts.length > 0" class="mt-4 pt-4 border-t border-white/20">
-          <h4 class="text-sm font-medium text-white/80 mb-2">Workshop Costs:</h4>
+          <h4 class="text-sm font-medium text-white mb-2">Workshop Costs:</h4>
           <div class="space-y-2">
             <div
               v-for="cost in workshop.workshopCosts"
               :key="cost.id"
-              class="flex items-center justify-between text-sm bg-white/5 rounded-lg p-2"
+              class="flex items-center justify-between text-sm bg-white/10 border border-white/10 rounded-lg p-3"
             >
-              <span class="text-white/80">{{ cost.description }}</span>
-              <span class="text-white font-medium">${{ (cost.amount / 100).toFixed(2) }}</span>
+              <span class="text-white font-medium">{{ cost.description }}</span>
+              <span class="text-white font-semibold">${{ (cost.amount / 100).toFixed(2) }}</span>
             </div>
           </div>
         </div>

@@ -112,17 +112,17 @@
         
         <!-- Order Items -->
         <div v-if="order.orderItems && order.orderItems.length > 0" class="mt-4 pt-4 border-t border-white/20">
-          <h4 class="text-sm font-medium text-white/80 mb-2">Order Items:</h4>
+          <h4 class="text-sm font-medium text-white mb-2">Order Items:</h4>
           <div class="space-y-2">
             <div
               v-for="item in order.orderItems"
               :key="item.id"
-              class="flex items-center justify-between text-sm bg-white/5 rounded-lg p-2"
+              class="flex items-center justify-between text-sm bg-white/10 border border-white/10 rounded-lg p-3"
             >
-              <span class="text-white/80">{{ item.item.name }}</span>
+              <span class="text-white font-medium">{{ item.item.name }}</span>
               <div class="flex items-center gap-4">
-                <span class="text-white/70">Qty: {{ item.quantity }}</span>
-                <span class="text-white font-medium">${{ (item.unitPrice / 100).toFixed(2) }}</span>
+                <span class="text-white/80">Qty: {{ item.quantity }}</span>
+                <span class="text-white font-semibold">${{ (item.unitPrice / 100).toFixed(2) }}</span>
               </div>
             </div>
           </div>

@@ -157,7 +157,7 @@
             <div
               v-for="(item, index) in formData.items"
               :key="index"
-              class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+              class="flex items-center gap-3 p-3 bg-white/10 border border-white/10 rounded-lg"
             >
               <div class="flex-1">
                 <select
