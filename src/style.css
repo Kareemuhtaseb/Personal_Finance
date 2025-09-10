@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import './assets/unified-theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0a0a0a;
+  min-height: 100vh;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-variant-numeric: tabular-nums;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Focus states for accessibility */
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-ring:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+
+/* Status indicators */
+.status-online {
+  @apply flex items-center;
+}
+
+.status-online::before {
+  content: '';
+  @apply w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse;
+}
+
+.status-offline {
+  @apply flex items-center;
+}
+
+.status-offline::before {
+  content: '';
+  @apply w-2 h-2 bg-gray-400 rounded-full mr-2;
+}
+
+.status-warning {
+  @apply flex items-center;
+}
+
+.status-warning::before {
+  content: '';
+  @apply w-2 h-2 bg-yellow-400 rounded-full mr-2 animate-pulse;
+}
